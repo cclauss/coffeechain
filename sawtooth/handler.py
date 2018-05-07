@@ -3,9 +3,9 @@ import logging
 from sawtooth_sdk.processor.exceptions import InternalError
 from sawtooth_sdk.processor.handler import TransactionHandler
 
-from .proto.config import TXF_NAME, ADDRESS_PREFIX, TXF_VERSIONS
-from .proto.coffee_pb2 import *
-from .proto import address
+from proto.config import TXF_NAME, ADDRESS_PREFIX, TXF_VERSIONS
+from proto.coffee_pb2 import *
+from proto import address
 
 
 class CoffeeTransactionHandler(TransactionHandler):
