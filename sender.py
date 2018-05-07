@@ -15,7 +15,7 @@ from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader, Batch, BatchList
 from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader, Transaction
 from sawtooth_signing import create_context, CryptoFactory
 
-from sawtooth import config
+from sawtooth.proto import config
 from sawtooth.proto import address
 from sawtooth.proto.coffee_pb2 import CoffeeChainEvents, Events
 
