@@ -17,7 +17,7 @@ from sawtooth_signing import create_context, CryptoFactory
 
 from sawtooth.proto import config
 from sawtooth.proto import address
-from sawtooth.proto.coffee_pb2 import CoffeeChainEvents, Events
+from sawtooth.proto.coffee_pb2 import CoffeeChainEvents, Events, Certification
 
 logging.basicConfig()
 
@@ -75,6 +75,22 @@ class CoffeeClient(object):
 
         self._transactions.append(tx)
 
+    def cert_create(self,key,name):
+        event = CoffeeChainEvents(cert_create=Certification(key=key,name=name))
+        header = self._create_header(
+            event,
+            outputs=[address.make_address(event.cert_create)],
+            inputs=[],
+        )
+
+        tx = Transaction(
+            header=header,
+            header_signature=self.signer.sign(header),
+            payload=event.SerializeToString()
+        )
+
+        self._transactions.append(tx)
+
     def submit(self):
         batch_header_bytes = BatchHeader(
             signer_public_key=self.signer.get_public_key().as_hex(),
@@ -120,4 +136,5 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 if __name__ == '__main__':
     client = CoffeeClient()
     client.mint_code("message-xyzabc123youassholeserializethis")
+    client.cert_create("key","azerty")
     client.submit()

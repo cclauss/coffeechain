@@ -29,6 +29,8 @@ class CoffeeTransactionHandler(TransactionHandler):
 
         handler = getattr(self, "handle_%s" % evt_name, None)
         if handler:
+            logging.info("handling cert_create")
+            logging.info("handle_%s" % evt_name)
             handler(getattr(evt, evt_name), context)
         else:
             raise InternalError("No handler for %s" % evt_name)
@@ -56,3 +58,12 @@ class CoffeeTransactionHandler(TransactionHandler):
         )
         print("code:", code.SerializeToString())
         self.set_state(context, code)
+
+    def handle_cert_create(self, event: Certification, context):
+
+        cert = Certification(
+            key=event.key,
+            name=event.name,
+        )
+        print("certificate:", cert.SerializeToString())
+        self.set_state(context,cert)
