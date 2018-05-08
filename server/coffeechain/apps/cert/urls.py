@@ -1,9 +1,8 @@
-from rest_framework.routers import SimpleRouter
+from django.urls import path
 
-from coffeechain.apps.cert.api import CertView
+from coffeechain.apps.cert.api import views
 
-router = SimpleRouter()
-router.register('cert', CertView)
-
-urlpatterns = []  # manual urls
-urlpatterns += router.urls
+urlpatterns = [
+    path("create/", views.CreateCertView.as_view()),
+    path("<slug:key>/", views.GetCertView.as_view())
+]
