@@ -170,8 +170,8 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 if __name__ == '__main__':
     client = CoffeeClient()
-    #client.mint_code("message-xyzabc123youassholeserializethiss")
+    client.mint_code("message-xyzabc123stoprejecting")
     #client.cert_create("key","azertyq")
     #client.harvest_create("key",2018,4)
-    client.farm_create("farmkey","Koe")
+    #client.farm_create("farmkey","Koe")
     client.submit()

@@ -38,8 +38,8 @@ message Location {
 
 message Harvest {
     string      key         = 1;
-    uint32      year        = 2;
-    uint32      month       = 3;
+    int32       year        = 2;
+    int32       month       = 3;
     Location    location    = 5;
 }
 
@@ -62,7 +62,8 @@ message Roast {
 message Events {
     message MintCode {
         string message      = 1;
-        string created_at   = 2;
+        int32  company      = 2;
+        string created_at   = 3;
     }
 
     message ActivateCode {
