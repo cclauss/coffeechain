@@ -1,7 +1,7 @@
 import hashlib
 
-from pb import *
-from sawtooth import config
+from . import coffee_pb2 as p
+from . import config
 
 
 def _hash(value):
@@ -9,9 +9,9 @@ def _hash(value):
 
 
 def make_address(event):
-    if isinstance(event, Events.MintCode):
+    if isinstance(event, p.Events.MintCode):
         return for_code(event.message)
-    elif isinstance(event, Code):
+    elif isinstance(event, p.Code):
         return for_code(event.message)
     else:
         raise ValueError("event type %s was unknown" % type(event))

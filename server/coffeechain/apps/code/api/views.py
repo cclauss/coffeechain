@@ -1,9 +1,7 @@
-import requests
 from google.protobuf.json_format import MessageToJson
 from rest_framework.response import Response
 from rest_framework.utils import json
 from rest_framework.views import APIView
-from sawtooth_sdk.protobuf.transaction_pb2 import Transaction
 
 from coffeechain.proto import address
 from coffeechain.proto.coffee_pb2 import CoffeeChainEvents, Events
