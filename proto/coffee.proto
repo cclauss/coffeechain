@@ -9,24 +9,24 @@ message Product {
 message Code {
     string  message         = 1;
     int32   company         = 2;
-    string   created_at      = 3;
-    string   activated_at    = 4;
+    string  created_at      = 3;
+    string  activated_at    = 4;
     Product product         = 5;
-    Roast   roast           = 6;
 }
 
 message Certification {
-    string key      = 1;
-    string name     = 2;
-    string hash     = 3;
-    uint32 size     = 4;
-    string url      = 5;
+    string key              = 1;
+    string name             = 2;
+    string hash             = 3;
+    uint32 size             = 4;
+    string url              = 5;
 }
 
 message Farm {
-    string key       = 1;
-    string name     = 2;        
-    repeated Certification certifications = 3;    
+    string key              = 1;
+    string name             = 2;
+    repeated string
+        certifications      = 3;
 }
 
 message Location {
@@ -36,32 +36,32 @@ message Location {
 }
 
 message Harvest {
-    string      key       = 1;
-    uint32      year     = 2;
-    uint32      month    = 3;    
-    Location    location = 5;
+    string      key         = 1;
+    uint32      year        = 2;
+    uint32      month       = 3;
+    Location    location    = 5;
 }
 
 message Shipment {
-    string      key          = 1;
+    string      key         = 1;
     Harvest     harvest     = 2;
     Location    source      = 3;
     Location    destination = 4;
-    string       shipped_at  = 5;
-    string       recieved_at = 6;
+    string      shipped_at  = 5;
+    string      recieved_at = 6;
 }
 
 message Roast {
-    string       roasted_at  = 1;
+    string      roasted_at  = 1;
     Location    location    = 2;
-    repeated 
-        Harvest harvests = 3;    
+    repeated
+        string  harvests    = 3;
 }
 
 message Events {
     message MintCode {
-        string message = 1;
-        string created_at = 2;
+        string message      = 1;
+        string created_at   = 2;
     }
 
     message ActivateCode {
