@@ -1,9 +1,10 @@
 import hashlib
 
+import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from coffeechain.apps.cert.api.serializers import CreateCertSerializer
+from coffeechain.apps.cert.api import serializers
 from coffeechain.proto.address import _hash
 from coffeechain.proto.coffee_pb2 import CoffeeChainEvents, Certification
 from coffeechain.services import sawtooth_api
@@ -12,12 +13,12 @@ from coffeechain.utils.drf.validation import validate_using
 
 class CreateCertView(APIView):
     def post(self, request, *args, **kwargs):
-        data = validate_using(CreateCertSerializer, request.data)
+        data = validate_using(serializers.CreateCertSerializer, data=request.data, view=self)
         cert_address = _hash(data['key'])
 
         print("Downloading doc: %s" % data['url'])
         try:
-            doc = request.get(data['url'], timeout=10).content
+            doc = requests.get(data['url'], timeout=10).content
         except Exception as e:
             return Response(status=400, data={
                 "error": "Error downloading and verifying the cetificate",
