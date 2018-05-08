@@ -11,6 +11,7 @@ from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader, Batch, BatchList
 from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader, Transaction
 
 from coffeechain.proto import address, coffee_pb2, config
+from coffeechain.proto.coffee_pb2 import CoffeeChainEvents
 from coffeechain.utils.misc import as_list
 
 _signer = settings.SAWTOOTH_SIGNER
@@ -145,3 +146,11 @@ def state_exists(addr):
     """
     err, data = get_state(addr)
     return not (err == 404)
+
+
+def event_transaction(name, cls, inputs=None, outputs=None, **kwargs):
+    return create_txn(
+        obj=CoffeeChainEvents(**{name: cls(**kwargs)}),
+        inputs=inputs or [],
+        outputs=outputs or []
+    )
