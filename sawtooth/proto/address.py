@@ -1,21 +1,21 @@
 import hashlib
 
-from .config import *
-from .coffee_pb2 import *
+from pb import *
+from sawtooth import config
 
 
 def _hash(value):
-    return ADDRESS_PREFIX + hashlib.sha512(value.encode("utf-8")).hexdigest()[-64:]
-
-
-def _make_code_address(message):
-    return _hash(message)
+    return config.ADDRESS_PREFIX + hashlib.sha512(value.encode("utf-8")).hexdigest()[-64:]
 
 
 def make_address(event):
     if isinstance(event, Events.MintCode):
-        return _make_code_address(event.message)
+        return for_code(event.message)
     elif isinstance(event, Code):
-        return _make_code_address(event.message)
+        return for_code(event.message)
     else:
         raise ValueError("event type %s was unknown" % type(event))
+
+
+def for_code(message):
+    return _hash(message)

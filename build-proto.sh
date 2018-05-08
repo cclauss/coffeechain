@@ -11,4 +11,4 @@ protoc proto/coffee.proto --python_out=./
 cp proto/*.py sawtooth/proto/
 
 # copy to the server
-cp proto/*.py server/coffeechain/proto/w
+cp proto/*.py server/coffeechain/proto/
