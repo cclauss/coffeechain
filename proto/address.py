@@ -4,7 +4,7 @@ from . import coffee_pb2 as p
 from . import config
 
 
-def hash(value):
+def _hash(value):
     return config.ADDRESS_PREFIX + hashlib.sha512(value.encode("utf-8")).hexdigest()[-64:]
 
 
@@ -24,16 +24,16 @@ def make_address(event):
 
 
 def for_code(message):
-    return hash(message)
+    return _hash(message)
 
 
 def for_cert(key):
-    return hash(key)
-
-
-def for_harvest(id):
-    return hash(id)
+    return _hash(key)
 
 
 def for_farm(key):
-    return hash(key)
+    return _hash(key)
+
+
+def for_harvest(key):
+    return _hash(key)
