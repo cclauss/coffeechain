@@ -15,7 +15,7 @@ from coffeechain.utils.drf.validation import validate_using
 class CreateCertView(APIView):
     def post(self, request, *args, **kwargs):
         data = validate_using(serializers.CreateCertSerializer, data=request.data, view=self)
-        cert_address = address.hash(data['key'])
+        cert_address = address.for_cert(data['key'])
 
         if sawtooth_api.state_exists(cert_address):
             raise ValidationError({"key": "Cert already exists at that address"})
@@ -37,7 +37,7 @@ class CreateCertView(APIView):
             hash=hashlib.md5(doc).hexdigest(),
             size=len(doc)
         )
-        
+
         resp_json = sawtooth_api.submit_batch(
             sawtooth_api.create_txn(
                 CoffeeChainEvents(cert_create=new_cert),
@@ -51,7 +51,7 @@ class CreateCertView(APIView):
 class GetCertView(APIView):
 
     def get(self, request, key=""):
-        cert_address = address.hash(key)
+        cert_address = address.for_cert(key)
         err, cert = sawtooth_api.get_state_as(Certification, cert_address)
 
         if err:
