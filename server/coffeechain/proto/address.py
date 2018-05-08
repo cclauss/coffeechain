@@ -16,7 +16,9 @@ def make_address(event):
     elif isinstance(event, p.Certification):
         return for_cert(event.key)
     elif isinstance(event, p.Harvest):
-        return for_harvest(event.id)
+        return for_harvest(event.key)
+    elif isinstance(event, p.Farm):
+        return for_farm(event.key)
     else:
         raise ValueError("event type %s was unknown" % type(event))
 
@@ -29,5 +31,9 @@ def for_cert(key):
     return _hash(key)
 
 
-def for_harvest(id):
-    return _hash(id)
+def for_farm(key):
+    return _hash(key)
+
+
+def for_harvest(key):
+    return _hash(key)

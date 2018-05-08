@@ -66,6 +66,10 @@ class CoffeeTransactionHandler(TransactionHandler):
 
         self.set_state(context,event)
 
+    def handle_farm_create(self, event: Farm, context):
+
+        self.set_state(context,event)
+
 
     #
     #

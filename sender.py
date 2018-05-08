@@ -17,7 +17,7 @@ from sawtooth_signing import create_context, CryptoFactory
 
 from sawtooth.proto import config
 from sawtooth.proto import address
-from sawtooth.proto.coffee_pb2 import CoffeeChainEvents, Events, Certification
+from sawtooth.proto.coffee_pb2 import CoffeeChainEvents, Events, Certification,Harvest,Farm
 
 logging.basicConfig()
 
@@ -91,7 +91,40 @@ class CoffeeClient(object):
 
         self._transactions.append(tx)
 
-    #def harvest_create(self,id,):
+    def harvest_create(self,key,year,month):
+        event = CoffeeChainEvents(harvest_create=Harvest(key=key,year=year,month=month))
+        header = self._create_header(
+            event,
+            outputs=[address.make_address(event.harvest_create)],
+            inputs=[],
+        )
+
+        tx = Transaction(
+            header=header,
+            header_signature=self.signer.sign(header),
+            payload=event.SerializeToString()
+        )
+
+        self._transactions.append(tx)
+
+    def farm_create(self,key,name):
+        event = CoffeeChainEvents(farm_create=Farm(key=key,name=name))
+        header = self._create_header(
+            event,
+            outputs=[address.make_address(event.farm_create)],
+            inputs=[],
+        )
+
+        tx = Transaction(
+            header=header,
+            header_signature=self.signer.sign(header),
+            payload=event.SerializeToString()
+        )
+
+        self._transactions.append(tx)
+
+   # def cert_get(self):
+
 
     def submit(self):
         batch_header_bytes = BatchHeader(
@@ -137,7 +170,8 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 if __name__ == '__main__':
     client = CoffeeClient()
-    client.mint_code("message-xyzabc123youassholeserializethis")
-    client.cert_create("key","azerty")
-
+    #client.mint_code("message-xyzabc123youassholeserializethiss")
+    #client.cert_create("key","azertyq")
+    #client.harvest_create("key",2018,4)
+    client.farm_create("farmkey","Koe")
     client.submit()
