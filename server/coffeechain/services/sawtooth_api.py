@@ -4,22 +4,33 @@ from base64 import b64decode
 
 import requests
 from django.conf import settings
+from google.protobuf.json_format import MessageToDict
+from requests import Response
 from rest_framework.utils import json
 from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader, Batch, BatchList
 from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader, Transaction
 
 from coffeechain.proto import address, coffee_pb2, config
+from coffeechain.utils.misc import as_list
 
 _signer = settings.SAWTOOTH_SIGNER
 
 
-def _post(url, data):
+def _post(url: str, data: dict) -> Response:
     return requests.post(
         url=settings.SAWTOOTH_API + url,
         data=data,
         headers={
             'Content-Type': 'application/octet-stream'
         }
+    )
+
+
+def proto_to_dict(obj):
+    return MessageToDict(
+        obj,
+        including_default_value_fields=True,
+        preserving_proto_field_name=True,
     )
 
 
@@ -41,16 +52,34 @@ def get_state(addr: str) -> (any, str):
         return None, b64decode(data['data'])
 
 
-def _parse_as(cls, data):
-    obj = cls()
+def parse_state_as(protobuf_class, data):
+    """
+    Parses the state['data'] field from swawtooth:8008/state/{address} as the
+    specified type of protobuf object and returns it.
+    """
+    obj = protobuf_class()
     obj.ParseFromString(data)
     return obj
+
+
+def get_state_as(protobuf_class, addr: str) -> (any, object):
+    """
+    Gets the state from sawtooth for the address, and parses it as a protobuf object
+    :param protobuf_class: The class to convert to
+    :param addr: The address (70 hex) to lookup
+    :return (Error Code, Protobuf Object) -> If error, object will be null
+    """
+    err, data = get_state(addr)
+    if not err:
+        return None, parse_state_as(coffee_pb2.Code, data)
+    else:
+        return err, None
 
 
 def get_code(message: str) -> coffee_pb2.Code:
     err, data = get_state(address.for_code(message))
     if not err:
-        return _parse_as(coffee_pb2.Code, data)
+        return parse_state_as(coffee_pb2.Code, data)
     else:
         return None
 
@@ -61,6 +90,9 @@ def submit_batch(transactions: []) -> dict:
     :param transactions:
     :return:
     """
+
+    transactions = as_list(transactions)
+
     batch_header_bytes = BatchHeader(
         signer_public_key=_signer.get_public_key().as_hex(),
         transaction_ids=[t.header_signature for t in transactions],
