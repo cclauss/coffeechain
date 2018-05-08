@@ -8,7 +8,7 @@ message Product {
 
 message Code {
     string  message         = 1;
-    int32   company_id      = 2;
+    int32   company         = 2;
     int64   created_at      = 3;
     int64   activated_at    = 4;
     Product product         = 5;
