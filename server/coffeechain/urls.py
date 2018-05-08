@@ -21,5 +21,5 @@ urlpatterns = [
     path('api/', include([
         path('codes/', include('coffeechain.apps.code.urls')),
         path('certs/', include('coffeechain.apps.cert.urls'))
-    ]))
+    ]))wz
 ]

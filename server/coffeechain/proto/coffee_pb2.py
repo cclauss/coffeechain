@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto/coffee.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x12proto/coffee.proto\"4\n\x07Product\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0f\n\x07\x63ompany\x18\x02 \x01(\x05\x12\x0c\n\x04name\x18\x03 \x01(\t\"\x84\x01\n\x04\x43ode\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0f\n\x07\x63ompany\x18\x02 \x01(\x05\x12\x12\n\ncreated_at\x18\x03 \x01(\t\x12\x14\n\x0c\x61\x63tivated_at\x18\x04 \x01(\t\x12\x19\n\x07product\x18\x05 \x01(\x0b\x32\x08.Product\x12\x15\n\x05roast\x18\x06 \x01(\x0b\x32\x06.Roast\"S\n\rCertification\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04hash\x18\x03 \x01(\t\x12\x0c\n\x04size\x18\x04 \x01(\r\x12\x0b\n\x03url\x18\x05 \x01(\t\"I\n\x04\x46\x61rm\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12&\n\x0e\x63\x65rtifications\x18\x03 \x03(\x0b\x32\x0e.Certification\"9\n\x08Location\x12\x0b\n\x03lat\x18\x01 \x01(\x02\x12\x0b\n\x03lng\x18\x02 \x01(\x02\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\"P\n\x07Harvest\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04year\x18\x02 \x01(\r\x12\r\n\x05month\x18\x03 \x01(\r\x12\x1b\n\x08location\x18\x05 \x01(\x0b\x32\t.Location\"\x96\x01\n\x08Shipment\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x07harvest\x18\x02 \x01(\x0b\x32\x08.Harvest\x12\x19\n\x06source\x18\x03 \x01(\x0b\x32\t.Location\x12\x1e\n\x0b\x64\x65stination\x18\x04 \x01(\x0b\x32\t.Location\x12\x12\n\nshipped_at\x18\x05 \x01(\t\x12\x13\n\x0brecieved_at\x18\x06 \x01(\t\"T\n\x05Roast\x12\x12\n\nroasted_at\x18\x01 \x01(\t\x12\x1b\n\x08location\x18\x02 \x01(\x0b\x32\t.Location\x12\x1a\n\x08harvests\x18\x03 \x03(\x0b\x32\x08.Harvest\"p\n\x06\x45vents\x1a/\n\x08MintCode\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x12\n\ncreated_at\x18\x02 \x01(\t\x1a\x35\n\x0c\x41\x63tivateCode\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tivated_at\x18\x02 \x01(\t\"\xdd\x01\n\x11\x43offeeChainEvents\x12%\n\tmint_code\x18\x01 \x01(\x0b\x32\x10.Events.MintCodeH\x00\x12-\n\ractivate_code\x18\x02 \x01(\x0b\x32\x14.Events.ActivateCodeH\x00\x12%\n\x0b\x63\x65rt_create\x18\x03 \x01(\x0b\x32\x0e.CertificationH\x00\x12\"\n\x0eharvest_create\x18\x04 \x01(\x0b\x32\x08.HarvestH\x00\x12\x1c\n\x0b\x66\x61rm_create\x18\x05 \x01(\x0b\x32\x05.FarmH\x00\x42\t\n\x07payloadb\x06proto3')
+  serialized_pb=_b('\n\x12proto/coffee.proto\"4\n\x07Product\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0f\n\x07\x63ompany\x18\x02 \x01(\x05\x12\x0c\n\x04name\x18\x03 \x01(\t\"m\n\x04\x43ode\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0f\n\x07\x63ompany\x18\x02 \x01(\x05\x12\x12\n\ncreated_at\x18\x03 \x01(\t\x12\x14\n\x0c\x61\x63tivated_at\x18\x04 \x01(\t\x12\x19\n\x07product\x18\x05 \x01(\x0b\x32\x08.Product\"S\n\rCertification\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x0c\n\x04hash\x18\x03 \x01(\t\x12\x0c\n\x04size\x18\x04 \x01(\r\x12\x0b\n\x03url\x18\x05 \x01(\t\"9\n\x04\x46\x61rm\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x16\n\x0e\x63\x65rtifications\x18\x03 \x03(\t\"9\n\x08Location\x12\x0b\n\x03lat\x18\x01 \x01(\x02\x12\x0b\n\x03lng\x18\x02 \x01(\x02\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\"P\n\x07Harvest\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0c\n\x04year\x18\x02 \x01(\r\x12\r\n\x05month\x18\x03 \x01(\r\x12\x1b\n\x08location\x18\x05 \x01(\x0b\x32\t.Location\"\x96\x01\n\x08Shipment\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x07harvest\x18\x02 \x01(\x0b\x32\x08.Harvest\x12\x19\n\x06source\x18\x03 \x01(\x0b\x32\t.Location\x12\x1e\n\x0b\x64\x65stination\x18\x04 \x01(\x0b\x32\t.Location\x12\x12\n\nshipped_at\x18\x05 \x01(\t\x12\x13\n\x0brecieved_at\x18\x06 \x01(\t\"J\n\x05Roast\x12\x12\n\nroasted_at\x18\x01 \x01(\t\x12\x1b\n\x08location\x18\x02 \x01(\x0b\x32\t.Location\x12\x10\n\x08harvests\x18\x03 \x03(\t\"p\n\x06\x45vents\x1a/\n\x08MintCode\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x12\n\ncreated_at\x18\x02 \x01(\t\x1a\x35\n\x0c\x41\x63tivateCode\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63tivated_at\x18\x02 \x01(\t\"\xdd\x01\n\x11\x43offeeChainEvents\x12%\n\tmint_code\x18\x01 \x01(\x0b\x32\x10.Events.MintCodeH\x00\x12-\n\ractivate_code\x18\x02 \x01(\x0b\x32\x14.Events.ActivateCodeH\x00\x12%\n\x0b\x63\x65rt_create\x18\x03 \x01(\x0b\x32\x0e.CertificationH\x00\x12\"\n\x0eharvest_create\x18\x04 \x01(\x0b\x32\x08.HarvestH\x00\x12\x1c\n\x0b\x66\x61rm_create\x18\x05 \x01(\x0b\x32\x05.FarmH\x00\x42\t\n\x07payloadb\x06proto3')
 )
 
 
@@ -112,13 +112,6 @@ _CODE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='roast', full_name='Code.roast', index=5,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -131,8 +124,8 @@ _CODE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=77,
-  serialized_end=209,
+  serialized_start=76,
+  serialized_end=185,
 )
 
 
@@ -190,8 +183,8 @@ _CERTIFICATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=211,
-  serialized_end=294,
+  serialized_start=187,
+  serialized_end=270,
 )
 
 
@@ -218,7 +211,7 @@ _FARM = _descriptor.Descriptor(
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='certifications', full_name='Farm.certifications', index=2,
-      number=3, type=11, cpp_type=10, label=3,
+      number=3, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -235,8 +228,8 @@ _FARM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=296,
-  serialized_end=369,
+  serialized_start=272,
+  serialized_end=329,
 )
 
 
@@ -280,8 +273,8 @@ _LOCATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=371,
-  serialized_end=428,
+  serialized_start=331,
+  serialized_end=388,
 )
 
 
@@ -332,8 +325,8 @@ _HARVEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=430,
-  serialized_end=510,
+  serialized_start=390,
+  serialized_end=470,
 )
 
 
@@ -398,8 +391,8 @@ _SHIPMENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=513,
-  serialized_end=663,
+  serialized_start=473,
+  serialized_end=623,
 )
 
 
@@ -426,7 +419,7 @@ _ROAST = _descriptor.Descriptor(
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='harvests', full_name='Roast.harvests', index=2,
-      number=3, type=11, cpp_type=10, label=3,
+      number=3, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -443,8 +436,8 @@ _ROAST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=665,
-  serialized_end=749,
+  serialized_start=625,
+  serialized_end=699,
 )
 
 
@@ -481,8 +474,8 @@ _EVENTS_MINTCODE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=761,
-  serialized_end=808,
+  serialized_start=711,
+  serialized_end=758,
 )
 
 _EVENTS_ACTIVATECODE = _descriptor.Descriptor(
@@ -518,8 +511,8 @@ _EVENTS_ACTIVATECODE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=810,
-  serialized_end=863,
+  serialized_start=760,
+  serialized_end=813,
 )
 
 _EVENTS = _descriptor.Descriptor(
@@ -541,8 +534,8 @@ _EVENTS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=751,
-  serialized_end=863,
+  serialized_start=701,
+  serialized_end=813,
 )
 
 
@@ -603,19 +596,16 @@ _COFFEECHAINEVENTS = _descriptor.Descriptor(
       name='payload', full_name='CoffeeChainEvents.payload',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=866,
-  serialized_end=1087,
+  serialized_start=816,
+  serialized_end=1037,
 )
 
 _CODE.fields_by_name['product'].message_type = _PRODUCT
-_CODE.fields_by_name['roast'].message_type = _ROAST
-_FARM.fields_by_name['certifications'].message_type = _CERTIFICATION
 _HARVEST.fields_by_name['location'].message_type = _LOCATION
 _SHIPMENT.fields_by_name['harvest'].message_type = _HARVEST
 _SHIPMENT.fields_by_name['source'].message_type = _LOCATION
 _SHIPMENT.fields_by_name['destination'].message_type = _LOCATION
 _ROAST.fields_by_name['location'].message_type = _LOCATION
-_ROAST.fields_by_name['harvests'].message_type = _HARVEST
 _EVENTS_MINTCODE.containing_type = _EVENTS
 _EVENTS_ACTIVATECODE.containing_type = _EVENTS
 _COFFEECHAINEVENTS.fields_by_name['mint_code'].message_type = _EVENTS_MINTCODE
