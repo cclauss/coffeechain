@@ -137,3 +137,11 @@ def create_txn(obj, outputs: [] = None, inputs: [] = None):
         header_signature=_signer.sign(header),
         payload=obj.SerializeToString()
     )
+
+
+def state_exists(addr):
+    """
+    Returns true if the state address exists in sawtooth
+    """
+    err, data = get_state(addr)
+    return not (err == 404)

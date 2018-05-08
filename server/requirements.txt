@@ -7,3 +7,5 @@ requests            >=2.18.4, <3
 
 sawtooth-sdk        == 1.0.4
 
+arrow               == 0.12.1
+jsonschema          == 2.5.1
