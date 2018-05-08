@@ -71,7 +71,7 @@ def get_state_as(protobuf_class, addr: str) -> (any, object):
     """
     err, data = get_state(addr)
     if not err:
-        return None, parse_state_as(coffee_pb2.Code, data)
+        return None, parse_state_as(protobuf_class, data)
     else:
         return err, None
 
