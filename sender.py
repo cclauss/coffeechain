@@ -91,6 +91,8 @@ class CoffeeClient(object):
 
         self._transactions.append(tx)
 
+    #def harvest_create(self,id,):
+
     def submit(self):
         batch_header_bytes = BatchHeader(
             signer_public_key=self.signer.get_public_key().as_hex(),
@@ -137,4 +139,5 @@ if __name__ == '__main__':
     client = CoffeeClient()
     client.mint_code("message-xyzabc123youassholeserializethis")
     client.cert_create("key","azerty")
+
     client.submit()

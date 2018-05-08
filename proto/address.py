@@ -15,6 +15,8 @@ def make_address(event):
         return for_code(event.message)
     elif isinstance(event, p.Certification):
         return for_cert(event.key)
+    elif isinstance(event, p.Harvest):
+        return for_harvest(event.id)
     else:
         raise ValueError("event type %s was unknown" % type(event))
 
@@ -25,3 +27,7 @@ def for_code(message):
 
 def for_cert(key):
     return _hash(key)
+
+
+def for_harvest(id):
+    return _hash(id)

@@ -29,8 +29,8 @@ class CoffeeTransactionHandler(TransactionHandler):
 
         handler = getattr(self, "handle_%s" % evt_name, None)
         if handler:
-            logging.info("handling cert_create")
-            logging.info("handle_%s" % evt_name)
+            logging.info("calling %s" % evt_name)
+            logging.info("%r" % evt)
             handler(getattr(evt, evt_name), context)
         else:
             raise InternalError("No handler for %s" % evt_name)
@@ -50,8 +50,7 @@ class CoffeeTransactionHandler(TransactionHandler):
             logging.debug("set state calculated address: %s" % address_out)
 
     def handle_mint_code(self, event: Events.MintCode, context):
-        logging.info("handling mint_code")
-        logging.info("%r" % event)
+
         code = Code(
             message=event.message,
             company_id=3,
@@ -61,9 +60,20 @@ class CoffeeTransactionHandler(TransactionHandler):
 
     def handle_cert_create(self, event: Certification, context):
 
-        cert = Certification(
-            key=event.key,
-            name=event.name,
-        )
-        print("certificate:", cert.SerializeToString())
-        self.set_state(context,cert)
+        self.set_state(context,event)
+
+    def handle_harvest_create(self, event: Harvest, context):
+
+        self.set_state(context,event)
+
+
+    #
+    #
+    #     harbat = Harvest(
+    #         id=event.id,
+    #         month=event.month,
+    #         year=event.year
+    #
+    #     )
+    #     print("harvest batch:",harbat.SerializeToString())
+    #     self.set_state(context, harbat)

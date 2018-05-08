@@ -2,15 +2,15 @@ syntax = "proto3";
 
 message Product {
     int32   id          = 1;
-    int32   company_id  = 2;
+    int32   company  = 2;
     string  name        = 3;
 }
 
 message Code {
     string  message         = 1;
     int32   company         = 2;
-    int64   created_at      = 3;
-    int64   activated_at    = 4;
+    string   created_at      = 3;
+    string   activated_at    = 4;
     Product product         = 5;
     Roast   roast           = 6;
 }
@@ -24,7 +24,7 @@ message Certification {
 }
 
 message Farm {
-    string id       = 1;
+    string key       = 1;
     string name     = 2;        
     repeated Certification certifications = 3;    
 }
@@ -36,23 +36,23 @@ message Location {
 }
 
 message Harvest {
-    string      id       = 1;
+    string      key       = 1;
     uint32      year     = 2;
     uint32      month    = 3;    
     Location    location = 5;
 }
 
 message Shipment {
-    string      id          = 1;
+    string      key          = 1;
     Harvest     harvest     = 2;
     Location    source      = 3;
     Location    destination = 4;
-    int64       shipped_at  = 5;
-    int64       recieved_at = 6;
+    string       shipped_at  = 5;
+    string       recieved_at = 6;
 }
 
 message Roast {
-    int64       roasted_at  = 1;
+    string       roasted_at  = 1;
     Location    location    = 2;
     repeated 
         Harvest harvests = 3;    
@@ -61,12 +61,12 @@ message Roast {
 message Events {
     message MintCode {
         string message = 1;
-        int64 created_at = 2;
+        string created_at = 2;
     }
 
     message ActivateCode {
         string message = 1;
-        int64 timestamp = 2;
+        string activated_at = 2;
     }
 }
 
