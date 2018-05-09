@@ -6,7 +6,7 @@ from proto.config import TXF_NAME, ADDRESS_PREFIX, TXF_VERSIONS
 
 from google.protobuf.message import DecodeError
 
-from sawtooth_sdk.processor.exceptions import InternalError
+from sawtooth_sdk.processor.exceptions import InternalError, InvalidTransaction
 from sawtooth_sdk.processor.handler import TransactionHandler
 
 
@@ -78,6 +78,25 @@ class ActualHandler(object):
     def handle_farm_create(self, event):
         assert isinstance(event, Farm)
         self.state.set_for_object(event)
+
+    def handle_add_related(self, event):
+        assert isinstance(event, Events.AddRelated)
+
+        def add(event, related_class, src_class, list_name):
+            src = self.state.get_and_parse(src_class, address.for_harvest(event.object_key))
+            related = self.state.get_and_parse(related_class, address.for_farm(event.related_key))
+            getattr(src, list_name).append(related.key)
+            self.state.set_for_object(src)
+
+        action_map = {
+            "harvest_farm": (Harvest, Farm, "farms"),
+            "harvest_shipment": (Harvest, Shipment, "shipments")
+        }
+
+        if event.action not in action_map:
+            raise InvalidTransaction("Unmapped action for AddRelated")
+
+        add(event, *action_map[event.action])
 
 
 class CoffeeTransactionHandler(TransactionHandler):
