@@ -1,0 +1,5 @@
+# requirements for running the sawtooth transaction processor
+# install in your local virtualenv before running `python processor.py`
+
+sawtooth-sdk    == 1.0.4
+arrow           == 0.12.1
