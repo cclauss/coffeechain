@@ -21,9 +21,9 @@ def sawtooth_address_exists(address_func):
     assert addr_gen is not None, "address module function '%s' not found" % address_func
 
     def _validate(value):
-        print("checking : %s" % value)
         if not sawtooth_api.state_exists(addr_gen(value)):
             raise ValidationError("State for '%s' does not exist" % value)
+        return value
 
     return _validate
 
@@ -35,5 +35,6 @@ def sawtooth_address_doesnt_exist(address_func):
     def _validate(value):
         if sawtooth_api.state_exists(addr_gen(value)):
             raise ValidationError("State for '%s' alrady exists" % value)
+        return value
 
     return _validate

@@ -53,15 +53,14 @@ message Shipment {
     Location    destination = 3;
     string      shipped_at  = 4;
     string      recieved_at = 5;
-    repeated
-        string  harvests    = 6;
 }
 
 message Roast {
-    string      roasted_at  = 1;
-    Location    location    = 2;
+    string      key         = 1;
+    string      roasted_at  = 2;
+    Location    location    = 3;
     repeated
-        string  harvests    = 3;
+        string  harvests    = 4;
 }
 
 message Events {
@@ -80,7 +79,7 @@ message Events {
 
     // generic add-related-field-to-object event, so we don't have to
     // spawn a million of them.  Object update events should be fine.
-    // it is up to the handler to process these properly
+    // it is up to the handler to process these properlyp
     message AddRelated {
         string action = 1;
         string object_key = 2;
@@ -97,5 +96,6 @@ message CoffeeChainEvents {
         Farm                farm_create     = 5;
         Events.FarmAddCert  farm_add_cert   = 6;
         Events.AddRelated   add_related     = 7;
+        Shipment            shipment_create = 8;
     }
 }
