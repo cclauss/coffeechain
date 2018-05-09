@@ -6,6 +6,7 @@ import requests
 from django.conf import settings
 from google.protobuf.json_format import MessageToDict
 from requests import Response
+from rest_framework.exceptions import NotFound
 from rest_framework.utils import json
 from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader, Batch, BatchList
 from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader, Transaction
@@ -154,3 +155,18 @@ def event_transaction(name, cls, inputs=None, outputs=None, **kwargs):
         inputs=inputs or [],
         outputs=outputs or []
     )
+
+
+def get_or_404(pb_class, addr: str):
+    err, obj = get_state_as(pb_class, addr)
+    if err:
+        raise NotFound(
+            detail={
+                "error": "Error retrieving %s" % pb_class.__name__,
+                "error_code": err,
+                "details": {
+                    "address": addr
+                }
+            }
+        )
+    return obj

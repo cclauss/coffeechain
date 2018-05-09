@@ -47,26 +47,16 @@ class AddCertView(APIView):
 
 
 class GetFarmView(APIView):
-    def get(self, request, **kwargs):
-        farm_address = address.for_farm(kwargs.get('key', None))
-        err, farm = sawtooth_api.get_state_as(Farm, farm_address)
-
-        if err:
-            return Response(status=400, data={
-                "error": "Error getting Farm",
-                "details": {
-                    "error_code": err,
-                    "address": farm_address
-                }
-            })
+    def get(self, request, key=None):
+        farm = sawtooth_api.get_or_404(Farm, address.for_farm(key))
 
         data = sawtooth_api.proto_to_dict(farm)
 
-        def _get_cert(key):
-            cert_address = address.for_cert(key)
+        def _get_cert(cert_key):
+            cert_address = address.for_cert(cert_key)
             err, cert = sawtooth_api.get_state_as(Certification, cert_address)
             if err:
-                cert = Certification(key=key, description="Certification does not exist")
+                cert = Certification(key=cert_key, description="Certification does not exist")
             return sawtooth_api.proto_to_dict(cert)
 
         data['certifications'] = [_get_cert(c) for c in data['certifications']]
