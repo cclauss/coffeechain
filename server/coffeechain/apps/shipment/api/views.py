@@ -25,5 +25,5 @@ class ShipmentCreateView(APIView):
 
 class ShipmentGetView(APIView):
     def get(self, request, key=None):
-        harvest = sawtooth_api.get_or_404(Shipment, address.for_harvest(key))
+        harvest = sawtooth_api.get_or_404(Shipment, address.for_shipment(key))
         return Response(data=sawtooth_api.proto_to_dict(harvest))

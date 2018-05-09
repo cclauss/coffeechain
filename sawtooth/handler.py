@@ -77,6 +77,10 @@ class ActualHandler(object):
             Code(message=event.message, company=event.company, created_at=event.created_at)
         )
 
+    def handle_roast_create(self, event: Roast):
+        assert isinstance(event, Roast)
+        self.state.set_for_object(event)
+
     def handle_cert_create(self, event: Certification):
         assert isinstance(event, Certification)
         self.state.set_for_object(event)
@@ -100,11 +104,13 @@ class ActualHandler(object):
             print("Generic Add Related")
             print("    source  : %r of %r" % (evt.object_key, obj_class))
             print("    related : %r of %r" % (evt.related_key, related_class))
-            src = self.state.get_and_parse(obj_class, address.for_harvest(evt.object_key))
-            related = self.state.get_and_parse(related_class, address.for_farm(evt.related_key))
-            items = getattr(src, list_name) + [related.key]
-            items = list(set(items))  # remove duplicates
-            setattr(src, list_name, items)
+            # get the state & address of the two items, using the mapping class to handle any class
+            src = self.state.get_and_parse(obj_class, address.addr_map[obj_class](evt.object_key))
+            related = self.state.get_and_parse(related_class, address.addr_map[related_class](evt.related_key))
+
+            list_field = getattr(src, list_name)  # acts like a list, but really is a RepeatedScalarContext
+            list_field[:] = list(set(list_field[:] + [related.key]))
+
             self.state.set_for_object(src)
 
         action_map = {
@@ -139,7 +145,7 @@ class CoffeeTransactionHandler(TransactionHandler):
         try:
             evt.ParseFromString(transaction.payload)
         except DecodeError as e:
-            print("Error decoding message %s" % e)
+            print("Error decoding message %s" % str(e))
             print("  1. Object must be `CoffeeChainEvents`")
             print("  2. Handler & application protobuf files must match")
             print("  ---------------------------------------")

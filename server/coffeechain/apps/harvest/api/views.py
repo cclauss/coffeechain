@@ -74,3 +74,5 @@ class HarvestAddShipmentView(APIView):
             inputs=[address.for_harvest(key), address.for_shipment(data['key'])],
             outputs=[address.for_harvest(key)]  # this is the address we will be writing to
         )
+
+        return Response(data=resp)

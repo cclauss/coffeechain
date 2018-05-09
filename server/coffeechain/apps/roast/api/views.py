@@ -1,8 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from coffeechain.apps.farm.api.serializers import CreateFarmSerializer
-from coffeechain.apps.roast.api.serializers import RoastAddHarvestSerializer
+from coffeechain.apps.roast.api.serializers import RoastAddHarvestSerializer, RoastCreateSerializer
 from coffeechain.proto import address
 from coffeechain.proto.coffee_pb2 import Farm, Events, Roast, Harvest, Certification, Shipment
 from coffeechain.services import sawtooth_api
@@ -11,13 +10,13 @@ from coffeechain.utils.drf.validation import validate_using
 
 class RoastCreateView(APIView):
     def post(self, request, *args, **kwargs):
-        data = validate_using(CreateFarmSerializer, data=request.data, view=self)
+        data = validate_using(RoastCreateSerializer, data=request.data, view=self)
         roast = Roast(**data)
 
         resp = sawtooth_api.submit_event(
-            roast_create=Roast,
+            roast_create=roast,
             inputs=[address.for_harvest(h) for h in roast.harvests],
-            outputs=[address.for_roast(roast)]  # this is the address we will be writing to
+            outputs=[address.for_roast(roast.key)]  # this is the address we will be writing to
         )
 
         return Response(data=resp)
@@ -42,7 +41,7 @@ class RoastGetView(APIView):
 
 class RoastAddHarvestView(APIView):
     def post(self, request, key=None):
-        roast = sawtooth_api.get_or_404(Roast, address.for_farm(key))
+        roast = sawtooth_api.get_or_404(Roast, address.for_roast(key))
         data = validate_using(RoastAddHarvestSerializer, data=request.data, view=self)
 
         resp = sawtooth_api.submit_event(
