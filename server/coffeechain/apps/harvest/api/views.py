@@ -22,8 +22,19 @@ class CreateHarvestView(APIView):
             shipments=data['shipments']
         )
 
+        resp = sawtooth_api.submit_batch(
+            sawtooth_api.create_txn(
+                obj=harvest,
+                inputs=(
+                    [address.for_farm(f) for f in harvest.farms] +
+                    [address.for_shipment(s) for s in harvest.shipments]
+                ),
+                outputs=[address.for_harvest(harvest.key)]
+            )
+        )
+
         return Response(
-            data=sawtooth_api.proto_to_dict(harvest)
+            data=resp
         )
 
 
