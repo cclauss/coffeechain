@@ -22,6 +22,8 @@ urlpatterns = [
         path('codes/', include('coffeechain.apps.code.urls')),
         path('certs/', include('coffeechain.apps.cert.urls')),
         path('farms/', include('coffeechain.apps.farm.urls')),
-        path('harvests/', include('coffeechain.apps.harvest.urls'))
+        path('harvests/', include('coffeechain.apps.harvest.urls')),
+        path('shipments/', include('coffeechain.apps.shipment.urls')),
+        path('roasts/', include('coffeechain.apps.roast.urls'))
     ]))
 ]

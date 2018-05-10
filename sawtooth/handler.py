@@ -1,13 +1,13 @@
 import logging
 
-from proto import address
+from google.protobuf.message import DecodeError
 from proto.coffee_pb2 import *
 from proto.config import TXF_NAME, ADDRESS_PREFIX, TXF_VERSIONS
-
-from google.protobuf.message import DecodeError
-
 from sawtooth_sdk.processor.exceptions import InternalError
 from sawtooth_sdk.processor.handler import TransactionHandler
+from sawtooth_sdk.protobuf.state_context_pb2 import TpStateEntry
+
+from proto import address
 
 
 class StateManager(object):
@@ -21,10 +21,20 @@ class StateManager(object):
         :param addr: The address of the state block to look up
         :param pb_class: The protofbuf class type to parse the data into
         """
-        data = self.context.get_state([addr])[0]  # assume the address is correct
-        obj = pb_class()
-        obj.ParseFromString(data)
-        return obj
+
+        # assume the address is correct
+        data = self.context.get_state([addr])  # type: [TpStateEntry]
+
+        try:
+            obj = pb_class()
+            obj.ParseFromString(data[0].data)
+            return obj
+        except Exception as e:
+            print("Error getting or parsing data from state")
+            print("  class  : %s" % pb_class)
+            print("  address: %s" % addr)
+            print("  data   : %s" % data[0].data)
+            raise e
 
     def set_for_object(self, pb_object):
         """
@@ -67,8 +77,16 @@ class ActualHandler(object):
             Code(message=event.message, company=event.company, created_at=event.created_at)
         )
 
+    def handle_roast_create(self, event: Roast):
+        assert isinstance(event, Roast)
+        self.state.set_for_object(event)
+
     def handle_cert_create(self, event: Certification):
         assert isinstance(event, Certification)
+        self.state.set_for_object(event)
+
+    def handle_shipment_create(self, event: Shipment):
+        assert isinstance(event, Shipment)
         self.state.set_for_object(event)
 
     def handle_harvest_create(self, event: Harvest):
@@ -78,6 +96,34 @@ class ActualHandler(object):
     def handle_farm_create(self, event):
         assert isinstance(event, Farm)
         self.state.set_for_object(event)
+
+    def handle_add_related(self, event):
+        assert isinstance(event, Events.AddRelated)
+
+        def add(evt, obj_class, related_class, list_name):
+            print("Generic Add Related")
+            print("    source  : %r of %r" % (evt.object_key, obj_class))
+            print("    related : %r of %r" % (evt.related_key, related_class))
+            # get the state & address of the two items, using the mapping class to handle any class
+            src = self.state.get_and_parse(obj_class, address.addr_map[obj_class](evt.object_key))
+            related = self.state.get_and_parse(related_class, address.addr_map[related_class](evt.related_key))
+
+            list_field = getattr(src, list_name)  # acts like a list, but really is a RepeatedScalarContext
+            list_field[:] = list(set(list_field[:] + [related.key]))
+
+            self.state.set_for_object(src)
+
+        action_map = {
+            "farm_cert": (Farm, Certification, "certifications"),
+            "harvest_farm": (Harvest, Farm, "farms"),
+            "harvest_shipment": (Harvest, Shipment, "shipments"),
+            "roast_harvest": (Roast, Harvest, "harvests")
+        }
+
+        if event.action not in action_map:
+            raise InternalError("Unmapped action for AddRelated: %s" % event.action)
+
+        add(event, *action_map[event.action])
 
 
 class CoffeeTransactionHandler(TransactionHandler):
@@ -99,8 +145,11 @@ class CoffeeTransactionHandler(TransactionHandler):
         try:
             evt.ParseFromString(transaction.payload)
         except DecodeError as e:
-            print("Error decoding message %s" % e)
-            print("    body: %r" % transaction.payload)
+            print("Error decoding message %s" % str(e))
+            print("  1. Object must be `CoffeeChainEvents`")
+            print("  2. Handler & application protobuf files must match")
+            print("  ---------------------------------------")
+            print("  body: %r" % transaction.payload)
             return
 
         evt_name = evt.WhichOneof('payload')

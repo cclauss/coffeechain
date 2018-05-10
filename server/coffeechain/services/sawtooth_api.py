@@ -6,6 +6,7 @@ import requests
 from django.conf import settings
 from google.protobuf.json_format import MessageToDict
 from requests import Response
+from rest_framework.exceptions import NotFound
 from rest_framework.utils import json
 from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader, Batch, BatchList
 from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader, Transaction
@@ -154,3 +155,48 @@ def event_transaction(name, cls, inputs=None, outputs=None, **kwargs):
         inputs=inputs or [],
         outputs=outputs or []
     )
+
+
+def submit_event(inputs=None, outputs=None, **kwargs):
+    """
+    This is the primary way to submit data to sawtooth.  Most other
+    methods are just helpers.
+    todo: write a better description
+    """
+    assert len(kwargs) == 1, "Only one event type can be sent (e.g. harvest_create)"
+    return submit_batch(
+        create_txn(
+            obj=CoffeeChainEvents(**kwargs),
+            inputs=inputs or [],
+            outputs=outputs or []
+        )
+    )
+
+
+def get_or_404(pb_class, addr: str):
+    err, obj = get_state_as(pb_class, addr)
+    if err:
+        raise NotFound(
+            detail={
+                "error": "Error retrieving %s" % pb_class.__name__,
+                "error_code": err,
+                "details": {
+                    "address": addr
+                }
+            }
+        )
+    return obj
+
+
+def resolve_keys(item, list_key, pb_class, key_field="key"):
+    initial_data = item[list_key]
+    resolved_data = []
+
+    for key in initial_data:
+        addr = address.addr_map[pb_class](key)
+        err, cert = get_state_as(pb_class, addr)
+        if err:
+            cert = pb_class(key=key, description="%s not found" % pb_class.__name__)
+        resolved_data.append(proto_to_dict(cert))
+
+    item[list_key] = resolved_data

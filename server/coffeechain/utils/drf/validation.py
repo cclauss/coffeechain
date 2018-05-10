@@ -17,20 +17,24 @@ def validate_using(serializer_class, data, view=None, **kwargs):
 
 
 def sawtooth_address_exists(address_func):
+    addr_gen = getattr(address, address_func, None)
+    assert addr_gen is not None, "address module function '%s' not found" % address_func
+
     def _validate(value):
-        addr_gen = getattr(address, address_func, None)
-        assert addr_gen is not None, "address module function '%s' not found" % address_func
         if not sawtooth_api.state_exists(addr_gen(value)):
             raise ValidationError("State for '%s' does not exist" % value)
+        return value
 
     return _validate
 
 
 def sawtooth_address_doesnt_exist(address_func):
+    addr_gen = getattr(address, address_func, None)
+    assert addr_gen is not None, "address module function '%s' not found" % address_func
+
     def _validate(value):
-        addr_gen = getattr(address, address_func, None)
-        assert addr_gen is not None, "address module function '%s' not found" % address_func
         if sawtooth_api.state_exists(addr_gen(value)):
             raise ValidationError("State for '%s' alrady exists" % value)
+        return value
 
     return _validate
