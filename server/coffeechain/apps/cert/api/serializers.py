@@ -27,7 +27,7 @@ class HostedFileField(serializers.Serializer):
 
             doc = resp.content
             attrs['md5_hash'] = hashlib.md5(doc).hexdigest()
-            attrs['size']: len(doc)
+            attrs['size'] = len(doc)
         except ValidationError as e:
             raise
         except Exception as e:

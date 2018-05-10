@@ -18,7 +18,7 @@ message Code {
 message HostedFile {
     string name             = 1;
     string md5_hash         = 2;
-    string size             = 3;
+    int32  size             = 3;
     string url              = 4;
 }
 
