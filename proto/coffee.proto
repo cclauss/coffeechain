@@ -14,6 +14,14 @@ message Code {
     Product product         = 5;
 }
 
+// file should be embedded in another object, like a certification
+message HostedFile {
+    string name             = 1;
+    string md5_hash         = 2;
+    string size             = 3;
+    string url              = 4;
+}
+
 message Certification {
     string key              = 1;
     string name             = 2;
@@ -22,16 +30,14 @@ message Certification {
     string valid_from       = 5;
     string valid_to         = 6;
 
-    string file_url         = 7; // optional file, actual pdf, etc
-    string file_name        = 8;
-    string file_hash        = 9;
-    uint32 file_size        = 10;
+    HostedFile file         = 7;
 }
 
 message Farm {
     string key              = 1;
     string name             = 2;
-    string address          = 3;
+    repeated
+        string address      = 3;
     Location location       = 4;
     repeated string
         certifications      = 5;

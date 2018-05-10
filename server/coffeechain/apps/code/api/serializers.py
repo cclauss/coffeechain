@@ -1,21 +1,21 @@
-from rest_framework import fields
-from rest_framework.serializers import Serializer
+from rest_framework import serializers
 
+from coffeechain.common.rest_api.fields import *
 from coffeechain.utils.drf.fields import ArrowDateTimeField
 
 
-class MintCodesSerializer(Serializer):
-    company = fields.IntegerField(required=True)
-    messages = fields.ListField(
+class MintCodesSerializer(serializers.Serializer):
+    company = IntegerField(required=True)
+    messages = ListField(
         required=True,
-        child=fields.CharField(max_length=32, min_length=24)
+        child=CharField(max_length=32, min_length=24)
     )
     created_at = ArrowDateTimeField(required=True, as_str=True)
 
 
-class ActivateCodesSerializer(Serializer):
-    messages = fields.ListField(
+class ActivateCodesSerializer(serializers.Serializer):
+    messages = ListField(
         required=True, min_length=1,
-        child=fields.CharField(max_length=32, min_length=24)
+        child=CharField(max_length=32, min_length=24)
     )
     activated_at = ArrowDateTimeField(required=True, as_str=True)
