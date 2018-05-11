@@ -62,14 +62,3 @@ class RoastAddHarvestView(APIView):
         return Response(data=resp)
 
 
-class BlockChainDataView(APIView):
-    def get(self, request, key=None):
-        addr = address.for_roast(key)
-        roast = sawtooth_api.get_or_404(Roast, addr)
-        state_data = sawtooth_api.client.state(addr)
-        return Response(data={
-            "address": addr,
-            "state": state_data,
-            "head_block": sawtooth_api.client.block(state_data['head']),
-            "object": sawtooth_api.proto_to_dict(roast)
-        })

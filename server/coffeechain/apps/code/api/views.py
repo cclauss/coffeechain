@@ -52,6 +52,6 @@ class ActivateCodesView(APIView):
 
 
 class GetCode(APIView):
-    def get(self, request, message):
-        code = sawtooth_api.get_or_404(Code, address.for_code(message))
+    def get(self, request, key):
+        code = sawtooth_api.get_or_404(Code, address.for_code(key))
         return Response(sawtooth_api.proto_to_dict(code))
