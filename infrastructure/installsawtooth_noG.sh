@@ -57,10 +57,25 @@ sudo systemctl enable  sawtooth-poet-validator-registry-tp.service
 sudo systemctl enable  sawtooth-rest-api.service
 sudo systemctl enable  sawtooth-validator.service
 
-# Download software from git
-git clone https://github.com/StacySmet/transactionfamily-python.git
+# Install Nginx
+sudo apt-get install -y nginx
 
-# Install Apache2
-sudo apt-get install -y apache2
+# Configure port fowarding on port 80
+sudo rm /etc/nginx/sites-enabled/default
+sudo touch /etc/nginx/sites-enabled/sawtooth
+sudo echo "server {server_name default;
+    listen 80;
+    location / {
+        include proxy_params;
+        proxy_pass http://localhost:8008;
+    }
+}">/etc/nginx/sites-enabled/sawtooth
+
+# Test nginx config
+cd /etc/nginx/sites-enabled/
+sudo nginx -t
+
+# restart Nginx
+sudo nginx -s reload
 
 exit 0
