@@ -5,6 +5,7 @@ from coffeechain.common.rest_api.fields import *
 
 class CreateHarvestSerializer(serializers.Serializer):
     key = KeyField("for_harvest", exists=False)
+    country = CharField(required=True, max_length=100)
     year = IntegerField(min_value=2017, max_value=2100)
     month = IntegerField(min_value=1, max_value=12)
     location = LocationField()

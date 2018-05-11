@@ -12,15 +12,7 @@ class HarvestCreateView(APIView):
 
     def post(self, request):
         data = validate_using(CreateHarvestSerializer, data=request.data, view=self)
-
-        harvest = Harvest(
-            key=data['key'],
-            year=data['year'],
-            month=data['month'],
-            location=data['location'],
-            farms=data['farms'],
-            shipments=data['shipments']
-        )
+        harvest = Harvest(**data)
 
         resp = sawtooth_api.submit_event(
             harvest_create=harvest,
