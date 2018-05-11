@@ -1,12 +1,10 @@
 from functools import partial
 
-from google.protobuf.json_format import MessageToJson
 from rest_framework.response import Response
-from rest_framework.utils import json
 from rest_framework.views import APIView
 
 from coffeechain.proto import address
-from coffeechain.proto.coffee_pb2 import Events
+from coffeechain.proto.coffee_pb2 import Events, Code
 from coffeechain.services import sawtooth_api
 from coffeechain.services.sawtooth_api import event_transaction
 from coffeechain.utils.drf.validation import validate_using
@@ -24,8 +22,13 @@ class MintCodes(APIView):
         data = validate_using(serializers.MintCodesSerializer, data=request.data)
 
         resp = sawtooth_api.submit_batch([
-            mint_code(message=msg, created_at=data['created_at'], outputs=[address.for_code(msg)])
-            for msg in data['message']
+            mint_code(
+                message=msg,
+                company=data['company'],
+                created_at=data['created_at'],
+                outputs=[address.for_code(msg)]
+            )
+            for msg in data['messages']
         ])
 
         return Response(data=resp)
@@ -36,9 +39,12 @@ class ActivateCodesView(APIView):
         data = validate_using(serializers.ActivateCodesSerializer, data=request.data)
 
         resp = sawtooth_api.submit_batch([
-            activate_code(message=msg, activated_at=data['activated_at'],
-                          inputs=[address.for_code(msg)],
-                          outputs=[address.for_code(msg)])
+            activate_code(
+                message=msg,
+                activated_at=data['activated_at'],
+                inputs=[address.for_code(msg)],
+                outputs=[address.for_code(msg)]
+            )
             for msg in data['messages']
         ])
 
@@ -46,13 +52,6 @@ class ActivateCodesView(APIView):
 
 
 class GetCode(APIView):
-    def get(self, request, *args, **kwargs):
-        assert 'message' in kwargs
-        print(address.for_code("message-xyzabc123youassholeserializethis"))
-        code = sawtooth_api.get_code(kwargs['message'])
-        return Response(
-            data={
-                "type": "code",
-                "data": json.loads(MessageToJson(code))
-            }
-        )
+    def get(self, request, key):
+        code = sawtooth_api.get_or_404(Code, address.for_code(key))
+        return Response(sawtooth_api.proto_to_dict(code))

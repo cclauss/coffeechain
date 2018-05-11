@@ -51,13 +51,14 @@ message Location {
 
 message Harvest {
     string      key         = 1;
-    int32       year        = 2;
-    int32       month       = 3;
-    Location    location    = 4;
+    string      country     = 2;
+    int32       year        = 3;
+    int32       month       = 4;
+    Location    location    = 5;
     repeated
-        string  farms       = 5;
+        string  farms       = 6;
     repeated
-        string  shipments   = 6;
+        string  shipments   = 7;
 }
 
 message Shipment {

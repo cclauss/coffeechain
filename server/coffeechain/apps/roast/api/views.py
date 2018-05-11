@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -31,8 +33,11 @@ class RoastGetView(APIView):
         for h in data['harvests']:
             sawtooth_api.resolve_keys(h, 'shipments', Shipment)
             sawtooth_api.resolve_keys(h, 'farms', Farm)
+            # sort farms by date
             for f in h['farms']:
                 sawtooth_api.resolve_keys(f, 'certifications', Certification)
+
+        data['harvests'] = sorted(data['harvests'], key=itemgetter("year", "month"))
 
         return Response(
             data=data
@@ -55,3 +60,5 @@ class RoastAddHarvestView(APIView):
         )
 
         return Response(data=resp)
+
+

@@ -12,7 +12,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import environ
+from corsheaders.defaults import default_headers
 
+ALLOWED_HOSTS = ["*"]
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = default_headers + (
+    "X-ScanTrust-Consumer-Api-Key",
+)
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 app_root = environ.Path(__file__) - 2  # same as above, but a `Path` obj instead of str
@@ -31,11 +37,11 @@ SECRET_KEY = '!1691rqgog9$==m=ucr+d+5+17%6_cs-%60y^#k2tyziv#&by*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,10 +52,11 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     #
-    'coffeechain.apps.code'
+    'coffeechain.apps.code',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

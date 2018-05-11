@@ -24,6 +24,7 @@ urlpatterns = [
         path('farms/', include('coffeechain.apps.farm.urls')),
         path('harvests/', include('coffeechain.apps.harvest.urls')),
         path('shipments/', include('coffeechain.apps.shipment.urls')),
-        path('roasts/', include('coffeechain.apps.roast.urls'))
+        path('roasts/', include('coffeechain.apps.roast.urls')),
+        path('explore/', include('coffeechain.apps.explore.urls')),
     ]))
 ]
