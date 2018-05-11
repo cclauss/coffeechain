@@ -19,7 +19,8 @@ pb_class_map = dict(
 class AddressView(APIView):
 
     def get(self, request, addr, as_type=None):
-        data = sawtooth_api.get_raw_state_or_404(addr)
+        data = sawtooth_api.client.state(addr)
+        data['address'] = addr
         if as_type:
             bytes_data = b64decode(data['data'])
             try:
