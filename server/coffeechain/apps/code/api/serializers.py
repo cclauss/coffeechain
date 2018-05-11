@@ -6,16 +6,10 @@ from coffeechain.utils.drf.fields import ArrowDateTimeField
 
 class MintCodesSerializer(serializers.Serializer):
     company = IntegerField(required=True)
-    messages = ListField(
-        required=True,
-        child=CharField(max_length=32, min_length=24)
-    )
+    messages = KeyListField("for_code", exists=False)
     created_at = ArrowDateTimeField(required=True, as_str=True)
 
 
 class ActivateCodesSerializer(serializers.Serializer):
-    messages = ListField(
-        required=True, min_length=1,
-        child=CharField(max_length=32, min_length=24)
-    )
+    messages = KeyListField("for_code", exists=True)
     activated_at = ArrowDateTimeField(required=True, as_str=True)
