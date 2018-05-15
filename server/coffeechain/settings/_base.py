@@ -52,7 +52,15 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     #
+    'coffeechain.apps.cert',
     'coffeechain.apps.code',
+    'coffeechain.apps.explore',
+    'coffeechain.apps.farm',
+    'coffeechain.apps.harvest',
+    'coffeechain.apps.roast',
+    'coffeechain.apps.shipment',
+
+    'coffeechain.apps.data',
 ]
 
 MIDDLEWARE = [
