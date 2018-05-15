@@ -155,3 +155,4 @@ class CoffeeTransactionHandler(TransactionHandler):
         evt_name = evt.WhichOneof('payload')
         evt_data = getattr(evt, evt_name)
         ActualHandler(context).process(evt_name, evt_data)
+        logging.info("^^^^ TRANSACTION COMPLETE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ")
