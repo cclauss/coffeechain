@@ -18,28 +18,28 @@ version: "3.0"
 services:
 
   coffeechaintp1:
-    image: sawtooth/coffeechaintp:latest
+    image: sawtooth/coffeechain-tp:latest
     container_name: coffeechaintp1
     depends_on:
       - validator
     entrypoint: python processor.py --host validator
-  
+
   coffeechaintp2:
-    image: sawtooth/coffeechaintp:latest
+    image: sawtooth/coffeechain-tp:latest
     container_name: coffeechaintp2
     depends_on:
       - validator2
     entrypoint: python processor.py --host validator2
-  
+
   coffeechaintp3:
-    image: sawtooth/coffeechaintp:latest
+    image: sawtooth/coffeechain-tp:latest
     container_name: coffeechaintp3
     depends_on:
       - validator3
     entrypoint: python processor.py --host validator3
-  
+
   coffeechaintp4:
-    image: sawtooth/coffeechaintp:latest
+    image: sawtooth/coffeechain-tp:latest
     container_name: coffeechaintp4
     depends_on:
       - validator4
@@ -54,7 +54,7 @@ services:
     depends_on:
       - validator
     entrypoint: settings-tp -vv -C tcp://validator:4004
-  
+
   settingstp2:
     image: hyperledger/sawtooth-settings-tp:1.0
     container_name: settingstp2
@@ -77,7 +77,7 @@ services:
     entrypoint: settings-tp -vv -C tcp://validator4:4004
 
   validator:
-    image: coffeechain/validator:latest
+    image: sawtooth/coffeechain-validator:latest
     container_name: validator1
     expose:
       - 4004
@@ -85,13 +85,14 @@ services:
       - "4004:4004"
     # start the validator with an empty genesis batch
     entrypoint: "bash -c \"\
-        sawadm keygen && \
-        sawtooth keygen my_key && \
-        sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
-        sawadm genesis config-genesis.batch && \
-        sawtooth-validator -vv \
-        --endpoint tcp://validator:8800 \
+        ./start_genesis_node.sh tcp://validator:8800 tcp://validator2:8800,tcp://validator3:8800,tcp://validator4:8800
         \""
+    volumes:
+      - validator1-vol:/configs/
+      # sawadm keygen && \
+      #   sawtooth keygen my_key && \
+      #   sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
+      #   sawadm genesis config-genesis.batch && \
 #        mv /etc/sawtooth/validator.toml.example /etc/sawtooth/validator.toml && \
           # --endpoint tcp://validator:8800 \
           # --bind component:tcp://eth0:4004 \
@@ -101,38 +102,38 @@ services:
           # --seeds tcp://validator2:8800,tcp://validator3:8800,tcp://validator4:8800
 
   validator2:
-    image: coffeechain/validator:latest
+    image: sawtooth/coffeechain-validator:latest
     container_name: validator2
     # validator without genesis block
 
     entrypoint: "bash -c \"\
-        sawadm keygen && \
-        sawtooth-validator -vv \
-          --endpoint tcp://validator2:8800 \
+        ./start_node.sh tcp://validator2:8800 tcp://validator:8800,tcp://validator3:8800,tcp://validator4:8800       
         \""
+    volumes:
+      - validator2-vol:/configs/
 
   validator3:
-    image: coffeechain/validator:latest
+    image: sawtooth/coffeechain-validator:latest
     container_name: validator3
     # validator without genesis block
-  
+
     entrypoint: "bash -c \"\
-        sawadm keygen && \
-        sawtooth-validator -vv \
-          --endpoint tcp://validator3:8800 \
+        ./start_node.sh tcp://validator3:8800 tcp://validator:8800,tcp://validator2:8800,tcp://validator4:8800
         \""
-    
+    volumes:
+      - validator3-vol:/configs/
+
   validator4:
-    image: coffeechain/validator:latest
+    image: sawtooth/coffeechain-validator:latest
     container_name: validator4
     # validator without genesis block
-  
+
     entrypoint: "bash -c \"\
-        sawadm keygen && \
-        sawtooth-validator -vv \
-          --endpoint tcp://validator4:8800 \
+        ./start_node.sh tcp://validator4:8800 tcp://validator:8800,tcp://validator2:8800,tcp://validator3:8800
         \""
-       
+    volumes:
+      - validator4-vol:/configs/
+
   rest-api:
     image: hyperledger/sawtooth-rest-api:1.0
     container_name: sawtooth-rest-api
@@ -151,3 +152,8 @@ services:
         sawtooth keygen && \
         tail -f /dev/null \
         \""
+volumes:
+  validator1-vol:
+  validator2-vol:
+  validator3-vol:
+  validator4-vol:

@@ -39,12 +39,12 @@ bind = [
 peering = "dynamic"
 
 # Advertised network endpoint URL.
-#endpoint = "tcp://127.0.0.1:8800"
+#endpoint = "tcp://${HOSTNAME}:8800"
 
 # Uri(s) to connect to in order to initially connect to the validator network,
 # in the format tcp://hostname:port. This is not needed in static peering mode
 # and defaults to None.
-seeds = ["tcp://validator:8800","tcp://validator2:8800","tcp://validator3:8800","tcp://validator4:8800"]
+#seeds = ["tcp://validator:8800","tcp://validator2:8800","tcp://validator3:8800","tcp://validator4:8800"]
 
 # A list of peers to attempt to connect to in the format tcp://hostname:port.
 # It defaults to None.
