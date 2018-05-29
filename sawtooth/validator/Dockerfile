@@ -20,3 +20,33 @@ COPY ./*.toml ${SAWTOOTH_HOME}/etc/
 
 RUN chmod +x start_genesis_node.sh
 RUN chmod +x start_node.sh
+RUN chmod +x keypairtest.sh
+
+
+
+RUN \
+    # Update repositories
+    apt-get update \
+    # Install curl
+&&  apt-get install -y curl \
+    # Download filebeat package
+&&  curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb \
+    # Install filebeat
+&&  dpkg -i filebeat-6.2.4-amd64.deb \
+    # Rename standard filebeat config
+&&  mv /etc/filebeat/filebeat.yml /etc/filebeat/filebeat.yml.example
+# Copy certificate to certificate dir
+COPY ./logstash-beats.crt /etc/pki/tls/certs/
+COPY ./filebeat.yml /etc/filebeat/
+
+
+RUN apt-get install -y nodejs-legacy && \
+
+    apt install -y npm && \
+    
+    npm install -y zmq-zap && \
+
+    npm install -y zeromq
+
+
+RUN chmod go-w /etc/filebeat/filebeat.yml

@@ -11,14 +11,16 @@ fi
 if [ -e configs/keys/*.pub ] && [ -e configs/keys/*.priv ]
 then
 	echo "Data already exists on validator skipping keygen"
-	sawtooth-validator -vv \
+    service filebeat restart && \
+	sawtooth-validator  \
          --endpoint ${ENDPOINT} \
          --seeds ${SEEDS}
 	
 else
 	echo "No data has been found, generating key before starting validator..."
 	sawadm keygen && \
-	sawtooth-validator -vv \
+    service filebeat restart && \
+	sawtooth-validator  \
 	 --endpoint ${ENDPOINT} \
          --seeds ${SEEDS}
 fi

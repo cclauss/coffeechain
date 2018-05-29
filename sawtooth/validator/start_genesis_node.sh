@@ -11,17 +11,19 @@ fi
 if [ -e configs/keys/*.pub ] && [ -e configs/keys/*.priv ]
 then
 	echo "Data already exists on first validator skipping keygen & genesis block creation"
-	sawtooth-validator -vv \
-         --endpoint ${ENDPOINT} \
-         --seeds ${SEEDS}
+    service filebeat restart && \
+	sawtooth-validator  \
+        --endpoint ${ENDPOINT} \
+        --seeds ${SEEDS}
 	
 else
 	echo "No data has been found, generating the necesarry keys and start creation of genesis block"
-	sawadm keygen && \
-        sawtooth keygen my_key && \
-        sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
-        sawadm genesis config-genesis.batch && \
-	sawtooth-validator -vv \
-	 --endpoint ${ENDPOINT} \
-         --seeds ${SEEDS}
+    service filebeat restart && \
+    sawadm keygen && \
+    sawtooth keygen my_key && \
+    sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
+    sawadm genesis config-genesis.batch && \       
+	sawtooth-validator  \
+	    --endpoint ${ENDPOINT} \
+        --seeds ${SEEDS}
 fi

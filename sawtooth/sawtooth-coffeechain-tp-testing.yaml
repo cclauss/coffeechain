@@ -77,14 +77,17 @@ services:
     entrypoint: settings-tp -vv -C tcp://validator4:4004
 
   validator:
-    image: sawtooth/coffeechain-validator:latest
+    image: sawtooth/coffeechain-validator-npm:latest
     container_name: validator1
+    hostname: validator1
     expose:
       - 4004
     ports:
       - "4004:4004"
     # start the validator with an empty genesis batch
     entrypoint: "bash -c \"\
+        . ./keypairtest.sh && \
+        echo $KEYS[*] && \
         ./start_genesis_node.sh tcp://validator:8800 tcp://validator2:8800,tcp://validator3:8800,tcp://validator4:8800
         \""
     volumes:
@@ -102,8 +105,9 @@ services:
           # --seeds tcp://validator2:8800,tcp://validator3:8800,tcp://validator4:8800
 
   validator2:
-    image: sawtooth/coffeechain-validator:latest
+    image: sawtooth/coffeechain-validator-npm:latest
     container_name: validator2
+    hostname: validator2
     # validator without genesis block
 
     entrypoint: "bash -c \"\
@@ -113,20 +117,23 @@ services:
       - validator2-vol:/configs/
 
   validator3:
-    image: sawtooth/coffeechain-validator:latest
+    image: sawtooth/coffeechain-validator-npm:latest
     container_name: validator3
+    hostname: validator3
     # validator without genesis block
 
-    entrypoint: "bash -c \"\
-        ./start_node.sh tcp://validator3:8800 tcp://validator:8800,tcp://validator2:8800,tcp://validator4:8800
+    entrypoint: "bash -c \"\  
+        ./start_node.sh tcp://validator3:8800 tcp://validator:8800,tcp://validator2:8800,tcp://validator4:8800      
         \""
     volumes:
       - validator3-vol:/configs/
 
   validator4:
-    image: sawtooth/coffeechain-validator:latest
+    image: sawtooth/coffeechain-validator-npm:latest
     container_name: validator4
+    hostname: validator4
     # validator without genesis block
+    
 
     entrypoint: "bash -c \"\
         ./start_node.sh tcp://validator4:8800 tcp://validator:8800,tcp://validator2:8800,tcp://validator3:8800
@@ -152,8 +159,23 @@ services:
         sawtooth keygen && \
         tail -f /dev/null \
         \""
+
+  elk:
+    image: sawtooth/logserverp:latest
+    container_name: elk
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    hostname: elk
+        
 volumes:
   validator1-vol:
   validator2-vol:
   validator3-vol:
   validator4-vol:
+
