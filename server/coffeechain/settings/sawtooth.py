@@ -9,6 +9,8 @@ SAWTOOTH_KEY_FILE = app_root("signer.priv")
 
 if not Path(SAWTOOTH_KEY_FILE).exists():
     SAWTOOTH_HAS_KEY = False
+    SAWTOOTH_SIGNER = None
+    SAWTOOTH_ENABLED = False
 else:
     with open(SAWTOOTH_KEY_FILE, "rb") as f:
         SAWTOOTH_ENABLED = True

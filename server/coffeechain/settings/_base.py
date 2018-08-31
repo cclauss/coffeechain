@@ -26,16 +26,16 @@ app_root = environ.Path(__file__) - 2  # same as above, but a `Path` obj instead
 env = environ.Env(  # set default values and casting
     DEBUG=(bool, False),
 )
-environ.Env.read_env(env_file=app_root('.env'))  # reading .env file
+environ.Env.read_env(env_file=app_root('..', '.env'))  # reading .env file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!1691rqgog9$==m=ucr+d+5+17%6_cs-%60y^#k2tyziv#&by*'
+SECRET_KEY = env.str('SECRET_KEY', '!1691rqgog9$==m=ucr+d+5+17%6_cs-%60y^#k2tyziv#&by*')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', False)
 
 # Application definition
 
