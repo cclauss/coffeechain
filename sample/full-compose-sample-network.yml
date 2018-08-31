@@ -1,0 +1,79 @@
+# 
+# SAMPLE NETWORK WITH ALL SERVICES
+# 
+#   CoffeeChain API server : visible from host on 8000
+#   Sawtooth API server    : visible from host on 8008
+#
+# In a real configuraiton you'd want to hide the sawtooth api from 
+# the host, only exposing internally using `expose`
+# ------------------------------------------------------------------------------
+
+version: "2.1"
+
+services:
+
+  validator:
+    image: hyperledger/sawtooth-validator:1.0
+    container_name: sawtooth-validator
+    expose:
+      - 4004
+    ports:
+      - "4004:4004"
+    # start the validator with an empty genesis batch
+    entrypoint: "bash -c \"\
+        sawadm keygen && \
+        sawtooth keygen my_key && \
+        sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
+        sawadm genesis config-genesis.batch && \
+        sawtooth-validator -vv \
+          --endpoint tcp://validator:8800 \
+          --bind component:tcp://eth0:4004 \
+          --bind network:tcp://eth0:8800 \
+        \""
+
+  settings-tp:
+    image: hyperledger/sawtooth-settings-tp:1.0
+    container_name: sawtooth-settings-tp
+    depends_on:
+      - validator
+    entrypoint: settings-tp -vv -C tcp://validator:4004  
+
+  coffeechain-api:
+    image: coffeechain-api:latest
+    container_name: coffeechain-api
+    ports:
+      - "8000:8000"
+    environment:
+      - SAWTOOTH_API=http://rest-api:8008
+      - WORKERS=3
+    depends_on:
+      - validator
+      - coffeechain-tp
+
+  coffeechain-tp:
+    image: coffeechain-tp:latest
+    container_name: coffeechain-tp
+    depends_on:
+      - validator
+      - settings-tp
+      - rest-api
+    entrypoint: python processor.py --host validator
+
+  rest-api:
+    image: hyperledger/sawtooth-rest-api:1.0
+    container_name: sawtooth-rest-api
+    ports:
+      - "8008:8008"
+    depends_on:
+      - validator
+    entrypoint: sawtooth-rest-api -C tcp://validator:4004 --bind rest-api:8008
+
+  shell:
+    image: hyperledger/sawtooth-all:1.0
+    container_name: sawtooth-shell
+    depends_on:
+      - rest-api
+    entrypoint: "bash -c \"\
+        sawtooth keygen && \
+        tail -f /dev/null \
+        \""

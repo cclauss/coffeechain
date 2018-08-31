@@ -1,0 +1,190 @@
+# Copyright 2017 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+
+version: "3.0"
+
+services:
+
+  validator1:
+    image: hyperledger/sawtooth-validator:1.0
+    container_name: validator-1
+    expose:
+      - 4004
+    ports:
+      - "4004:4004"
+    # start the validator with an empty genesis batch
+    entrypoint: "bash -c \"\
+        sawadm keygen && \
+        sawtooth keygen my_key && \
+        sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
+        sawadm genesis config-genesis.batch && \
+        sawtooth-validator -v \
+          --endpoint tcp://validator1:8800 \
+          --bind component:tcp://eth0:4004 \
+          --bind network:tcp://eth0:8800 \
+          --scheduler parallel \
+          --peering dynamic
+        \""        
+
+  coffeechain-tp:
+    image: sawtooth:latest
+    container_name: coffeechain-1
+    depends_on:
+      - validator1
+    entrypoint: python processor.py --host validator1
+  
+  settings-tp:
+    image: hyperledger/sawtooth-settings-tp:1.0
+    container_name: settings-1
+    depends_on:
+      - validator1
+    entrypoint: settings-tp -vv -C tcp://validator1:4004
+
+
+  # ------------ 2 ---------------------------------------------------------------
+
+  validator2:
+    image: hyperledger/sawtooth-validator:1.0
+    container_name: validator-2
+    entrypoint: "bash -c \"\
+        sawadm keygen && \
+        sawtooth-validator -v \
+        --endpoint tcp://validator2:8800 \
+        --bind component:tcp://eth0:4004 \
+        --bind network:tcp://eth0:8800 \  
+        --scheduler parallel \
+        --peering dynamic \
+        --seeds tcp://validator1:8800 
+        \""
+    depends_on:
+      - validator1
+
+  settings-tp-2:
+    image: hyperledger/sawtooth-settings-tp:1.0
+    container_name: settings-2
+    depends_on:
+      - validator2
+    entrypoint: settings-tp -vv -C tcp://validator2:4004
+
+  coffeechain-tp-2:
+    image: sawtooth:latest
+    container_name: coffeechain-2
+    depends_on:
+      - validator2
+    entrypoint: python processor.py --host validator2
+
+  # ------------ 3 ---------------------------------------------------------------
+
+  validator3:
+    image: hyperledger/sawtooth-validator:1.0
+    container_name: validator-3
+    entrypoint: "bash -c \"\
+        sawadm keygen && \
+        sawtooth-validator -v \
+        --endpoint tcp://validator3:8800 \
+        --bind component:tcp://eth0:4004 \
+        --bind network:tcp://eth0:8800 \
+        --scheduler parallel \
+        --peering dynamic \
+        --seeds tcp://validator1:8800 
+        \""
+    depends_on:
+      - validator1
+
+  settings-tp-3:
+    image: hyperledger/sawtooth-settings-tp:1.0
+    container_name: settings-3
+    depends_on:
+      - validator3
+    entrypoint: settings-tp -vv -C tcp://validator3:4004
+
+  coffeechain-tp-3:
+    image: sawtooth:latest
+    container_name: coffeechain-3
+    depends_on:
+      - validator3
+    entrypoint: python processor.py --host validator3
+
+  # ------------ 4 ---------------------------------------------------------------
+
+  validator4:
+    image: hyperledger/sawtooth-validator:1.0
+    container_name: validator-4
+    entrypoint: "bash -c \"\
+        sawadm keygen && \
+        sawtooth-validator -vv \
+        --endpoint tcp://validator4:8800 \
+        --bind component:tcp://eth0:4004 \
+        --bind network:tcp://eth0:8800 \
+        --scheduler parallel \
+        --peering dynamic \
+        --seeds tcp://validator1:8800 
+        \""
+    depends_on:
+      - validator1
+
+  settings-tp-4:
+    image: hyperledger/sawtooth-settings-tp:1.0
+    container_name: settings-4
+    depends_on:
+      - validator4
+    entrypoint: settings-tp -vv -C tcp://validator4:4004
+
+  coffeechain-tp-4:
+    image: sawtooth:latest
+    container_name: coffeechain-4
+    depends_on:
+      - validator4
+    entrypoint: python processor.py --host validator4
+
+
+  validator3:
+    image: sawtooth/coffeechain-validator:latest
+    container_name: validator3
+    # validator without genesis block
+  
+    entrypoint: "bash -c \"\
+        sawadm keygen && \
+        sawtooth-validator -vv \
+          --endpoint tcp://validator3:8800 \
+        \""
+    
+  validator4:
+    image: sawtooth/coffeechain-validator:latest
+    container_name: validator4
+    # validator without genesis block
+  
+    entrypoint: "bash -c \"\
+        sawadm keygen && \
+        sawtooth-validator -vv \
+          --endpoint tcp://validator4:8800 \
+        \""
+       
+  rest-api:
+    image: hyperledger/sawtooth-rest-api:1.0
+    ports:
+      - "8008:8008"
+    depends_on:
+      - validator1
+    entrypoint: sawtooth-rest-api -C tcp://validator1:4004 --bind rest-api:8008
+
+  shell:
+    image: hyperledger/sawtooth-all:1.0
+    depends_on:
+      - rest-api
+    entrypoint: "bash -c \"\
+        sawtooth keygen && \
+        tail -f /dev/null \
+        \""

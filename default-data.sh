@@ -2,7 +2,8 @@
 
 set -e
 
-SAWTOOTH_HOST=localhost:8000
+#SAWTOOTH_HOST=http://localhost:8000
+SAWTOOTH_HOST=https://api.sawtooth-demo.scantrust.cc
 BIRD_CERT=birdfriendly-cca-2016-2019
 ECO_CERT=ecocert-pe-2017-95151
 
@@ -12,8 +13,6 @@ CAC_SHIPMENT=ship-peru-hkg-nykli710-486645
 
 MANLAO_FARM=manlao-river-coffee-naji
 MANLAO_HARVEST=manlao-naji-2017Q4
-
-ROAST_KEY=SH-20180507
 
 http --check-status post ${SAWTOOTH_HOST}/api/codes/mint/ << EOFJSON
 {
@@ -187,8 +186,8 @@ http --check-status -v post ${SAWTOOTH_HOST}/api/harvests/${CAC_HARVEST}/add-shi
 
 http --check-status -v post ${SAWTOOTH_HOST}/api/roasts/create/ << EOFJSON
 {
-	"key": "${ROAST_KEY}",
-	"roasted_at": "2018-06-03T19:35:00Z",
+	"key": "SH-20180507",
+	"roasted_at": "2018-05-07T04:00:00Z",
 	"location": {
 		"lat": 31.229788,
 		"lng": 121.450201,
@@ -202,4 +201,38 @@ http --check-status -v post ${SAWTOOTH_HOST}/api/roasts/create/ << EOFJSON
 EOFJSON
 sleep 2
 
-http -v get ${SAWTOOTH_HOST}/api/roasts/${ROAST_KEY}/
+http --check-status -v post ${SAWTOOTH_HOST}/api/roasts/create/ << EOFJSON
+{
+	"key": "SH-20180703",
+	"roasted_at": "2018-07-03T04:00:00Z",
+	"location": {
+		"lat": 31.229788,
+		"lng": 121.450201,
+		"description": "Shanghai, China"
+	},
+	"harvests": [
+		"${MANLAO_HARVEST}",
+		"${CAC_HARVEST}"
+	]
+}
+EOFJSON
+sleep 2
+
+http --check-status -v post ${SAWTOOTH_HOST}/api/roasts/create/ << EOFJSON
+{
+	"key": "SH-20180709",
+	"roasted_at": "2018-07-03T04:00:00Z",
+	"location": {
+		"lat": 31.229788,
+		"lng": 121.450201,
+		"description": "Shanghai, China"
+	},
+	"harvests": [
+		"${MANLAO_HARVEST}",
+		"${CAC_HARVEST}"
+	]
+}
+EOFJSON
+sleep 2
+
+http -v get ${SAWTOOTH_HOST}/api/roasts/SH-20180709/
