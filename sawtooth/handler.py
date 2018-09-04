@@ -30,10 +30,10 @@ class StateManager(object):
             obj.ParseFromString(data[0].data)
             return obj
         except Exception as e:
-            print("Error getting or parsing data from state")
-            print("  class  : %s" % pb_class)
-            print("  address: %s" % addr)
-            print("  data   : %s" % data[0].data)
+            logging.error("Error getting or parsing data from state")
+            logging.error("  class  : %s" % pb_class)
+            logging.error("  address: %s" % addr)
+            logging.error("  data   : %s" % data[0].data)
             raise e
 
     def set_for_object(self, pb_object):
@@ -44,7 +44,7 @@ class StateManager(object):
         addr = address.make_address(pb_object)  # generic address calc based on the class type
         content = pb_object.SerializeToString()
 
-        print("setting state for %s [%s] => %r" % (class_name, addr, content))
+        logging.debug("setting state for %s [%s] => %r" % (class_name, addr, content))
         address_out = self.context.set_state({
             addr: content
         })
@@ -101,9 +101,9 @@ class ActualHandler(object):
         assert isinstance(event, Events.AddRelated)
 
         def add(evt, obj_class, related_class, list_name):
-            print("Generic Add Related")
-            print("    source  : %r of %r" % (evt.object_key, obj_class))
-            print("    related : %r of %r" % (evt.related_key, related_class))
+            logging.debug("Generic Add Related")
+            logging.debug("    source  : %r of %r" % (evt.object_key, obj_class))
+            logging.debug("    related : %r of %r" % (evt.related_key, related_class))
             # get the state & address of the two items, using the mapping class to handle any class
             src = self.state.get_and_parse(obj_class, address.addr_map[obj_class](evt.object_key))
             related = self.state.get_and_parse(related_class, address.addr_map[related_class](evt.related_key))
@@ -140,19 +140,19 @@ class CoffeeTransactionHandler(TransactionHandler):
         return [ADDRESS_PREFIX]
 
     def apply(self, transaction, context):
-        logging.info("---- TRANSACTION RECIEVED ------------------------------------ ")
+        logging.debug("---- TRANSACTION RECIEVED ------------------------------------ ")
         evt = CoffeeChainEvents()
         try:
             evt.ParseFromString(transaction.payload)
         except DecodeError as e:
-            print("Error decoding message %s" % str(e))
-            print("  1. Object must be `CoffeeChainEvents`")
-            print("  2. Handler & application protobuf files must match")
-            print("  ---------------------------------------")
-            print("  body: %r" % transaction.payload)
+            logging.error("Error decoding message %s" % str(e))
+            logging.error("  1. Object must be `CoffeeChainEvents`")
+            logging.error("  2. Handler & application protobuf files must match")
+            logging.error("  ---------------------------------------")
+            logging.error("  body: %r" % transaction.payload)
             return
 
         evt_name = evt.WhichOneof('payload')
         evt_data = getattr(evt, evt_name)
         ActualHandler(context).process(evt_name, evt_data)
-        logging.info("^^^^ TRANSACTION COMPLETE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ")
+        logging.DEBUG("^^^^ TRANSACTION COMPLETE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ")

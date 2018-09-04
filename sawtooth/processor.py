@@ -6,7 +6,7 @@ import argparse
 from sawtooth_sdk.processor.core import TransactionProcessor
 from handler import CoffeeTransactionHandler
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # this should probably be in a command line parameter as well
 # as in an env variable.  commandline takes precedence
