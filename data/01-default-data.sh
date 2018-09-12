@@ -1,9 +1,8 @@
 #!/bin/bash
-
 set -e
 
-#SAWTOOTH_HOST=http://localhost:8000
-SAWTOOTH_HOST=https://api.sawtooth-demo.scantrust.cc
+source vars.sh 
+
 BIRD_CERT=birdfriendly-cca-2016-2019
 ECO_CERT=ecocert-pe-2017-95151
 
