@@ -234,4 +234,21 @@ http --check-status -v post ${SAWTOOTH_HOST}/api/roasts/create/ << EOFJSON
 EOFJSON
 sleep 2
 
+http --check-status -v post ${SAWTOOTH_HOST}/api/roasts/create/ << EOFJSON
+{
+	"key": "SH-20180831",
+	"roasted_at": "2018-07-03T04:00:00Z",
+	"location": {
+		"lat": 31.229788,
+		"lng": 121.450201,
+		"description": "Shanghai, China"
+	},
+	"harvests": [
+		"${MANLAO_HARVEST}",
+		"${CAC_HARVEST}"
+	]
+}
+EOFJSON
+sleep 2
+
 http -v get ${SAWTOOTH_HOST}/api/roasts/SH-20180709/
