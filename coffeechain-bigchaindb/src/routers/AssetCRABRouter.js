@@ -1,5 +1,6 @@
 import AbstractRouter from '../abstracts/AbstractRouter';
 import CRABService from '../services/CRABService';
+import ValidatorService from "../services/ValidatorService";
 
 export default class AssetCRABRouter extends AbstractRouter {
   /**
@@ -9,6 +10,7 @@ export default class AssetCRABRouter extends AbstractRouter {
   constructor(assetName) {
     super();
     this.crabService = new CRABService(assetName);
+    this.validatorService = new ValidatorService(assetName);
   }
 
   /**
@@ -16,13 +18,17 @@ export default class AssetCRABRouter extends AbstractRouter {
    * Required by AbstractRouter to initialize and register routes
    */
   registerRoutes() {
-    this.router.post('/', (req, res) => {
+    this.router.post('/', async (req, res) => {
       const userKeypair = req.body.keypair;
       const metadata = req.body.metadata;
-      // Verify payload received and then process it further
-      this.crabService.createAsset(userKeypair, metadata).then((value) => {
-        res.json(value);
-      });
+      const isValidSchema = await this.validatorService.validate(metadata);
+      if(isValidSchema){
+        this.crabService.createAsset(userKeypair, metadata).then((value) => {
+          res.json(value);
+        });
+      }else{
+          res.json({error: "Invalid Asset Schema"});
+      }
     });
 
     this.router.get('/:assetid', (req, res) => {
@@ -48,14 +54,20 @@ export default class AssetCRABRouter extends AbstractRouter {
       });
     });
 
-    this.router.put('/:assetid', (req, res) => {
+    this.router.put('/:assetid', async (req, res) => {
       const userKeypair = req.body.keypair;
       const metadata = req.body.metadata;
       const topublickey = req.body.topublickey;
       const assetid = req.params.assetid;
-      this.crabService.appendAsset(assetid, userKeypair, topublickey, metadata).then((value) => {
-        res.json(value);
-      });
+      const isValidSchema = await this.validatorService.validate(metadata);
+      if(isValidSchema){
+        this.crabService.appendAsset(assetid, userKeypair, topublickey, metadata).then((value) => {
+          res.json(value);
+        });
+      }else{
+          res.json({error: "Invalid Asset Schema"});
+      }
+
     });
 
     this.router.delete('/:assetid', (req, res) => {

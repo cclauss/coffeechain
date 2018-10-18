@@ -6,8 +6,10 @@
         "company": "number",
         "created_at": "string",
         "activated_at": "string",
-        "product": "product"
-
+        "product": {
+            "type": "single",
+            "asset": "product"
+        }
       }
     },
     {
@@ -43,7 +45,10 @@
                 "longitude": "number",
                 "description": "string"
             },
-            "harvests": "array"
+            "harvests": {
+                "type":"array",
+                "asset":"harvest"
+            }
         }
     },
     {
@@ -58,8 +63,14 @@
                 "longitude": "number",
                 "description": "string"
             },
-            "farms":"array",
-            "shipments":"array"
+            "farms":{
+                "type":"array",
+                "asset":"farm"
+            },
+            "shipments":{
+                "type":"array",
+                "asset":"shipment"
+            }
         }
     },
     {
@@ -73,7 +84,10 @@
                 "longitude": "number",
                 "description": "string"
             },
-            "certifications":"array"
+            "certifications":{
+                "type":"array",
+                "asset":"certification"
+            }
         }
     },
     {
