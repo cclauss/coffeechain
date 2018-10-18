@@ -1,0 +1,46 @@
+{
+  "name": "coffeechain-bigchaindb-express",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Coffeechain BigchainDB-Express Application",
+  "main": "src/bin/www.js",
+  "scripts": {
+    "build": "npm run clean && ./node_modules/.bin/babel src --out-dir dist --source-maps --copy-files",
+    "dev": "babel-watch -w src src/bin/www",
+    "clean": "rm -rf dist",
+    "serve": "npm run build && node dist/bin/www",
+    "test": "npm run build && mocha dist/**/*.spec.js",
+    "lint": "eslint src --ext js"
+  },
+  "keywords": [
+    "bigchaindb",
+    "orm",
+    "es6",
+    "blockchain",
+    "express",
+    "coffeechain"
+  ],
+  "author": "dev@scantrust.com",
+  "dependencies": {
+    "app-root-path": "2.1.0",
+    "bigchaindb-orm": "3.0.1",
+    "express": "4.16.3",
+    "express-json-validator-middleware": "1.2.3",
+    "http-errors": "1.6.3",
+    "morgan": "1.9.0",
+    "winston": "3.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-eslint": "8.2.5",
+    "babel-preset-env": "1.7.0",
+    "babel-watch": "2.0.7",
+    "eslint": "4.19.1",
+    "eslint-config-airbnb-base": "13.0.0",
+    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-promise": "3.8.0",
+    "mocha": "5.2.0",
+    "should": "13.2.1",
+    "supertest": "3.1.0"
+  }
+}

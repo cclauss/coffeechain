@@ -1,0 +1,101 @@
+{
+  "assets": [{
+      "name": "code",
+      "schema": {
+        "message": "string",
+        "company": "number",
+        "created_at": "string",
+        "activated_at": "string",
+        "product": "product"
+
+      }
+    },
+    {
+      "name": "product",
+      "schema": {
+        "id": "number",
+        "company": "number",
+        "name": "string"
+      }
+    },
+    {
+      "name": "certification",
+      "schema": {
+        "certification": {
+          "key": "string",
+          "name": "string",
+          "certifier_url": "string",
+          "instructions": "string",
+          "valid_from": "string",
+          "valid_to": "string",
+          "url": "string",
+          "md5": "string"
+        }
+      }
+    },
+    {
+        "name": "roast",
+        "schema": {
+            "key":"string",
+            "roasted_at":"string",
+            "location": {
+                "latitude": "number",
+                "longitude": "number",
+                "description": "string"
+            },
+            "harvests": "array"
+        }
+    },
+    {
+        "name":"harvest",
+        "schema":{
+            "key":"string",
+            "country":"string",
+            "year":"number",
+            "month":"number",
+            "location": {
+                "latitude": "number",
+                "longitude": "number",
+                "description": "string"
+            },
+            "farms":"array",
+            "shipments":"array"
+        }
+    },
+    {
+        "name":"farm",
+        "schema":{
+            "key":"string",
+            "name":"string",
+            "address":"string",
+            "location": {
+                "latitude": "number",
+                "longitude": "number",
+                "description": "string"
+            },
+            "certifications":"array"
+        }
+    },
+    {
+        "name":"shipment",
+        "schema":{
+            "key":"string",
+            "kg":"number",
+            "ship_name":"string",
+            "source": {
+                "latitude": "number",
+                "longitude": "number",
+                "description": "string"
+            },
+            "destination": {
+                "latitude": "number",
+                "longitude": "number",
+                "description": "string"
+            },
+            "shipped_at":"string",
+            "received_at":"string",
+            "extra_info":"array"
+        }
+    }
+  ]
+}
