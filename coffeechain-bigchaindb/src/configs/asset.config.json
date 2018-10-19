@@ -23,7 +23,6 @@
     {
       "name": "certification",
       "schema": {
-        "certification": {
           "key": "string",
           "name": "string",
           "certifier_url": "string",
@@ -32,7 +31,6 @@
           "valid_to": "string",
           "url": "string",
           "md5": "string"
-        }
       }
     },
     {

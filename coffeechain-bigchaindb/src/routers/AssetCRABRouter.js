@@ -27,20 +27,18 @@ export default class AssetCRABRouter extends AbstractRouter {
           res.json(value);
         });
       }else{
-          res.json({error: "Invalid Asset Schema"});
+        res.json({error:'Asset Schema Validation Failed'});
       }
     });
 
     this.router.get('/:assetid', (req, res) => {
       const assetid = req.params.assetid;
-      // Verify payload received and then process it further
       this.crabService.retrieveAsset(assetid).then((value) => {
         res.json(value);
       });
     });
 
     this.router.get('/', (req, res) => {
-      // Verify payload received and then process it further
       this.crabService.retrieveAllAssets().then((value) => {
         res.json(value);
       });
@@ -48,7 +46,6 @@ export default class AssetCRABRouter extends AbstractRouter {
 
     this.router.get('/history/:assetid', (req, res) => {
       const assetid = req.params.assetid;
-      // Verify payload received and then process it further
       this.crabService.assetHistory(assetid).then((value) => {
         res.json(value);
       });
@@ -65,7 +62,7 @@ export default class AssetCRABRouter extends AbstractRouter {
           res.json(value);
         });
       }else{
-          res.json({error: "Invalid Asset Schema"});
+        res.json({error:'Asset Schema Validation Failed'});
       }
 
     });

@@ -17,7 +17,6 @@ class ORMService {
   setupORM() {
     const URL = `${bdbConfig.host}${bdbConfig.api}`;  
     this.bdbORM = new Orm(URL, bdbConfig.headers);
-    console.log(new this.bdbORM.driver.Ed25519Keypair());
     for (const asset of assetConfig.assets) {
       this.bdbORM.define(asset.name, asset.schema);
       this.assets.push(asset.name);
