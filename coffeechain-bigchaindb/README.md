@@ -23,6 +23,7 @@
 │   ├── /services/                          # Data services and other shared utilities
 │   │   ├── /CRABServices.js                # Basic BigchainDB CRAB services
 │   │   ├── /LoggerService.js               # Logger(winston) service
+│   │   ├── /ValidatorService.js            # validation service. Currently validates API payload against the defined asset schema
 │   │   └── /ORMService.js                  # BigchainDB ORM services setup
 │   └── /App.js                             # Express.js application
 └── package.json                            # List of project dependencies
