@@ -2,7 +2,7 @@ import express from 'express';
 import { NotFoundErrorHandler, HttpErrorHandler } from '../handlers/ErrorHandler';
 
 export default class AbstractRouter {
-  constructor() {
+  constructor () {
     if (this.constructor === AbstractRouter) {
       throw new TypeError('Cannot construct instances of abstract class AbstractRouter directly. Must extend it.');
     }
@@ -18,16 +18,16 @@ export default class AbstractRouter {
     this.registerErrorHandlers();
   }
 
-  registerRoutes() {
+  registerRoutes () { // eslint-disable-line
     throw new TypeError('Do not call abstract method registerRoutes from child.');
   }
 
-  registerErrorHandlers() {
+  registerErrorHandlers () {
     this.router.use(NotFoundErrorHandler);
     this.router.use(HttpErrorHandler);
   }
 
-  getRouter() {
+  getRouter () {
     return this.router;
   }
 }

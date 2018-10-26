@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+
 import express from 'express';
 import morgan from 'morgan';
 import logger from './services/LoggerService';

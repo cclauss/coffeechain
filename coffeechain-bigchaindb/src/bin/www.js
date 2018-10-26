@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+
 import http from 'http';
 import app from '../App';
 
@@ -13,10 +15,10 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
+function normalizePort (val) {
   const port = parseInt(val, 10);
 
-  if (isNaN(port)) {
+  if (isNaN(port)) { // eslint-disable-line
     return val;
   }
 
@@ -31,22 +33,18 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError (error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
 
-  const bind = typeof port === 'string'? 'Pipe ' + port : 'Port ' + port;
+  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
+      throw new Error(`${bind} requires elevated privileges`);
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
+      throw new Error(`${bind} is already in use`);
     default:
       throw error;
   }
@@ -56,8 +54,8 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+function onListening () {
   const addr = server.address();
-  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  console.log('Listening on ' + bind);
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  console.log(`Listening on ${bind}`); // eslint-disable-line
 }

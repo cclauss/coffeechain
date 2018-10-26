@@ -5,7 +5,7 @@ import assetConfig from '../configs/asset.config.json';
 let instance = null;
 
 class ORMService {
-  constructor() {
+  constructor () {
     if (!instance) {
       instance = this;
       this.assets = [];
@@ -14,19 +14,18 @@ class ORMService {
     return instance;
   }
 
-  setupORM() {
-    const URL = `${bdbConfig.host}${bdbConfig.api}`;  
+  setupORM () {
+    const URL = `${bdbConfig.host}${bdbConfig.api}`;
     this.bdbORM = new Orm(URL, bdbConfig.headers);
-    for (const asset of assetConfig.assets) {
+    for (const asset of assetConfig.assets) { // eslint-disable-line no-restricted-syntax
       this.bdbORM.define(asset.name, asset.schema);
       this.assets.push(asset.name);
     }
   }
 
-  getModel(assetName) {
+  getModel (assetName) {
     return this.bdbORM.models[assetName];
   }
-
 }
 
 export default ORMService;
