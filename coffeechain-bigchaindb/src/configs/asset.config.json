@@ -2,6 +2,7 @@
   "assets": [{
       "name": "code",
       "schema": {
+        "key": "string",
         "message": "string",
         "company": "number",
         "created_at": "string",
@@ -15,7 +16,7 @@
     {
       "name": "product",
       "schema": {
-        "id": "number",
+        "key": "number",
         "company": "number",
         "name": "string"
       }
