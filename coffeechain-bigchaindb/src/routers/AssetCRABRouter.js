@@ -19,56 +19,95 @@ export default class AssetCRABRouter extends AbstractRouter {
    */
   registerRoutes () {
     this.router.post('/', async (req, res) => {
-      const { keypair, metadata } = req.body;
+      const {
+        keypair,
+        metadata
+      } = req.body;
       const isValidSchema = await this.validatorService.validate(metadata);
       if (isValidSchema) {
         this.crabService.createAsset(keypair, metadata).then((value) => {
-          res.json(value);
+          if (value.error) {
+            res.sendStatus(value.error.code);
+          }
+          res.json(value.data);
         });
       } else {
-        res.json({ error: 'Asset Schema Validation Failed' });
+        res.json({
+          error: 'Asset Schema Validation Failed'
+        });
       }
     });
 
     this.router.get('/:assetid', (req, res) => {
-      const { assetid } = req.params;
+      const {
+        assetid
+      } = req.params;
       this.crabService.retrieveAsset(assetid).then((value) => {
-        res.json(value);
+        if (value.error) {
+          res.sendStatus(value.error.code);
+        }
+        if (value.length < 1) {
+          res.sendStatus(404);
+        }
+        res.json(value[0].data);
       });
     });
 
     this.router.get('/', (req, res) => {
       this.crabService.retrieveAllAssets().then((value) => {
+        if (value.error) {
+          res.sendStatus(value.error.code);
+        }
         res.json(value);
       });
     });
 
     this.router.get('/history/:assetid', (req, res) => {
-      const { assetid } = req.params;
+      const {
+        assetid
+      } = req.params;
       this.crabService.assetHistory(assetid).then((value) => {
+        if (value.error) {
+          res.sendStatus(value.error.code);
+        }
         res.json(value);
       });
     });
 
     this.router.put('/:assetid', async (req, res) => {
       const {
-        keypair, metadata, topublickey, assetid
+        keypair,
+        metadata,
+        topublickey,
+        assetid
       } = req.body;
       const isValidSchema = await this.validatorService.validate(metadata);
       if (isValidSchema) {
         this.crabService.appendAsset(assetid, keypair, topublickey, metadata).then((value) => {
-          res.json(value);
+          if (value.error) {
+            res.sendStatus(value.error.code);
+          }
+          res.json(value.data);
         });
       } else {
-        res.json({ error: 'Asset Schema Validation Failed' });
+        res.json({
+          error: 'Asset Schema Validation Failed'
+        });
       }
     });
 
     this.router.delete('/:assetid', (req, res) => {
-      const { keypair } = req.body;
-      const { assetid } = req.params;
+      const {
+        keypair
+      } = req.body;
+      const {
+        assetid
+      } = req.params;
       this.crabService.burnAsset(assetid, keypair).then((value) => {
-        res.json(value);
+        if (value.error) {
+          res.sendStatus(value.error.code);
+        }
+        res.json(value.data);
       });
     });
   }

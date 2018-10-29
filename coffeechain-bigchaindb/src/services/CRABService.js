@@ -23,9 +23,7 @@ export default class CRABService {
     return this.assetModel.create({
       keypair: userKeypair,
       data: metadata
-    }, id).then((asset) => asset).catch((error) => Promise.resolve({
-      error
-    }));
+    }, id).then((asset) => asset).catch((error) => this.processError(error));
   }
 
   /**
@@ -36,9 +34,7 @@ export default class CRABService {
   retrieveAsset (assetid) {
     return this.assetModel
       .retrieve(assetid)
-      .then((asset) => asset).catch((error) => Promise.resolve({
-        error
-      }));
+      .then((asset) => asset).catch((error) => this.processError(error));
   }
 
   /**
@@ -48,9 +44,7 @@ export default class CRABService {
   retrieveAllAssets () {
     return this.assetModel
       .retrieve()
-      .then((asset) => asset).catch((error) => Promise.resolve({
-        error
-      }));
+      .then((asset) => asset).catch((error) => this.processError(error));
   }
 
   /**
@@ -74,9 +68,7 @@ export default class CRABService {
           });
         }
         throw new Error('Asset Not Found');
-      }).catch((error) => Promise.resolve({
-        error
-      }));
+      }).catch((error) => this.processError(error));
   }
 
   /**
@@ -96,16 +88,22 @@ export default class CRABService {
           });
         }
         throw Error('Asset Not Found');
-      }).catch((error) => Promise.resolve({
-        error
-      }));
+      }).catch((error) => this.processError(error));
   }
 
   assetHistory (assetid) {
     return this.assetModel
       .retrieve(assetid)
-      .then((asset) => asset[0].transactionHistory).catch((error) => Promise.resolve({
-        error
-      }));
+      .then((asset) => asset[0].transactionHistory).catch((error) => this.processError(error));
+  }
+
+  /* eslint-disable class-methods-use-this */
+  processError (error) {
+    if (Object.keys(error).length === 0) error.code = 404;
+    if (error.status) error.code = error.status.substring(0, 3).trim();
+    if (error.code === 'ECONNREFUSED') error.code = 500;
+    return Promise.resolve({
+      error
+    });
   }
 }
