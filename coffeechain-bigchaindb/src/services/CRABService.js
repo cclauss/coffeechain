@@ -61,6 +61,7 @@ export default class CRABService {
       .retrieve(assetid)
       .then((asset) => {
         if (asset.length) {
+          metadata.key = asset[0].id.split(':')[3]; //eslint-disable-line
           return asset[0].append({
             toPublicKey,
             keypair: userKeypair,

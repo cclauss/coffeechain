@@ -5,7 +5,7 @@
   "description": "Coffeechain BigchainDB-Express Application",
   "main": "src/bin/www.js",
   "scripts": {
-    "build": "npm run clean && ./node_modules/.bin/babel src --out-dir dist --source-maps --copy-files",
+    "build": "npm run lint && npm run clean && ./node_modules/.bin/babel src --out-dir dist --source-maps --copy-files",
     "dev": "babel-watch -w src src/bin/www",
     "clean": "rm -rf dist",
     "serve": "npm run build && node dist/bin/www",
@@ -25,7 +25,6 @@
     "app-root-path": "2.1.0",
     "bigchaindb-orm": "3.0.3",
     "express": "4.16.3",
-    "express-json-validator-middleware": "1.2.3",
     "http-errors": "1.6.3",
     "morgan": "1.9.0",
     "winston": "3.0.0"

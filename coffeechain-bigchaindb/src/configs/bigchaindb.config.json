@@ -1,5 +1,5 @@
 {
-    "host": "http://localhost:9984",
+    "host": "http://bigchaindb:9984",
     "api": "/api/v1/",
     "headers": {
         "app_id": "coffeechain"

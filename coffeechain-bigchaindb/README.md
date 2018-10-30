@@ -28,3 +28,7 @@
 │   └── /App.js                             # Express.js application
 └── package.json                            # List of project dependencies
 ```
+
+## Running with Docker
+
+From the command-line execute: `docker-compose up -d`
