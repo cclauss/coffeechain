@@ -1,5 +1,4 @@
-import logging
-import logging.config 
+import logging.config
 
 # gunicorn_logger = logging.getLogger("gunicorn.error")
 # if gunicorn_logger:
@@ -8,7 +7,7 @@ import logging.config
 # Match the output format of gunicorn (expected context)
 # I could not find a way to add our loggers to the existing gunicorn ones 
 # and re-use that, so opted for this way.  We expect to be running inside gunicorn
-LOGGING_CONFIG=None
+LOGGING_CONFIG = None
 logging.config.dictConfig({
     "version": 1,
     'disable_existing_loggers': False,

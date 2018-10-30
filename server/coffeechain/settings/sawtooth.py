@@ -3,9 +3,9 @@ from pathlib import Path
 from sawtooth_signing import CryptoFactory, create_context
 from sawtooth_signing.secp256k1 import Secp256k1PrivateKey
 
-from ._base import env, app_root
+from ._base import env, APP_ROOT
 
-SAWTOOTH_KEY_FILE = app_root("signer.priv")
+SAWTOOTH_KEY_FILE = APP_ROOT("signer.priv")
 
 if not Path(SAWTOOTH_KEY_FILE).exists():
     SAWTOOTH_HAS_KEY = False
