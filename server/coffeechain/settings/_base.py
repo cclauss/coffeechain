@@ -9,24 +9,31 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+import logging
 import os
 import environ
+
 from corsheaders.defaults import default_headers
+
+logger = logging.getLogger(__name__)
 
 ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = default_headers + (
     "X-ScanTrust-Consumer-Api-Key",
 )
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-app_root = environ.Path(__file__) - 2  # same as above, but a `Path` obj instead of str
+
+CODE_ROOT = environ.Path(__file__) - 2  # the "coffeechain" directory
+APP_ROOT = environ.Path(__file__) - 3  # directory with manage.py in it
 
 env = environ.Env(  # set default values and casting
     DEBUG=(bool, False),
 )
-environ.Env.read_env(env_file=app_root('..', '.env'))  # reading .env file
+
+_env_file = APP_ROOT(".env")
+if os.path.exists(_env_file):
+    logger.info("Reading .env file: %s" % _env_file)
+    environ.Env.read_env(_env_file)  # reading .env file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -92,7 +99,7 @@ WSGI_APPLICATION = 'coffeechain.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': APP_ROOT('db.sqlite3'),
     }
 }
 
