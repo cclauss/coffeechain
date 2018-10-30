@@ -65,26 +65,18 @@ http --check-status -v post ${SAWTOOTH_HOST}/api/harvests/create/ << EOFJSON
 EOFJSON
 sleep 1
 
-
-# Name of the Cooperative:墨江那拉壳热带农业开发有限公司
-# Name of the Farm:那拉壳有机咖啡庄园
-# Address of Farm?Location:云南省普洱市墨江县新抚镇界牌村挖落组挖落河
-# Harvest date:2017年12月 -2018年3月
-# Certificate descriptions:有机销售证明
-# Certificates :attached this email
-# validity of certificates:2018.02.02-2019.3.31
-# web URL where the certificates can be viewed online:www.ecocert.com
-
-# Name of the Cooperative:墨江那拉壳热带农业开发有限公司    
-# English: MOJIANG ''NA LA KE'' TROPICAL AGRICULTURE DEVELOPMENT CO., LTD..   
-# PinYing:MO JIANG NA LA KE RE DAI NONG YE KAI FA YOU XIAN GONG SI
-
-
-# Name of the Farm:那拉壳有机咖啡庄园 
-# English: ''NA LA KE'' Organic Coffee Farm    
-# PinYing: NA LA KE YOU JI KA FEI ZHUANG YUAN 
-
-
-# Address of Farm?Location: 云南省新抚镇界牌村挖落组挖落河 
-# English: XinFu Town, Waluo River, Waluo Team, Jiepai Village - XINFU TOWN - CHINA  
-# PinYing: YUN NAN SHENG XIN FU ZHEN JIE PAI CUN WA LUO ZU WA LUO HE 
+http --check-status -v post ${SAWTOOTH_HOST}/api/roasts/create/ << EOFJSON
+{
+	"key": "SH-20180916",
+	"roasted_at": "2018-07-03T04:00:00Z",
+	"location": {
+		"lat": 31.229788,
+		"lng": 121.450201,
+		"description": "Shanghai, China"
+	},
+	"harvests": [
+		"${MOJIANG_HARVEST}"
+	]
+}
+EOFJSON
+sleep 1
