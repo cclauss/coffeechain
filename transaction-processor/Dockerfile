@@ -1,7 +1,7 @@
 FROM python:3.6-alpine
 
 WORKDIR /app
-COPY ./requirements.txt .
+COPY ../server/requirements.txt .
 
 RUN \
     # this virtual package can be uninstalled after the python requirements are built
@@ -18,6 +18,6 @@ RUN \
 &&  apk del docker-build-deps
 
 COPY ./*.py     ./
-COPY ./proto    ./proto/
+COPY proto    ./proto/
 
 RUN chmod +x processor.py
