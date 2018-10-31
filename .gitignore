@@ -10,6 +10,7 @@ signer.key.priv
 # virtualenv folders
 .venv
 .venv/
+venv/
 venv2/
 venv3/
 

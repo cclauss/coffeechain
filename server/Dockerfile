@@ -1,7 +1,9 @@
 FROM python:3.6-alpine
 
 WORKDIR /app
-COPY ./requirements.txt .
+
+# copy in the requirements before bulding, all other app files come later
+COPY ./requirements.txt         .
 
 RUN \
     # this virtual package can be uninstalled after the python requirements are built
@@ -17,9 +19,11 @@ RUN \
     # remove the build deps virtual package
 &&  apk del docker-build-deps
 
-COPY ./*.py         ./
-COPY ./coffeechain  ./coffeechain/
-COPY ./scripts      ./scripts/
+
+COPY ./*.py                     .
+COPY ./coffeechain              ./coffeechain/
+COPY ./scripts                  ./scripts/
+COPY ./entrypoint-gunicorn.sh   .
 
 # create the .env file
 RUN touch .env 
@@ -31,8 +35,14 @@ RUN python manage.py migrate
 RUN python manage.py runscript make_private_key
 
 # set up the entrypoint file, and add as the default entrypoint for the container
-COPY ./entrypoint-gunicorn.sh ./
 RUN chmod +x ./entrypoint-gunicorn.sh
 
 # use entrypoint so we can still have ctrl^c ability from the console when using docker run without "-it"
 ENTRYPOINT ["/app/entrypoint-gunicorn.sh"]
+
+# ENV VARIABLES
+# These variables should be supplied to the container at runtime
+#
+# Name -------- Format ---------------- Default ------------
+# DEBUG         False|True              False
+# SAWTOOTH_API  URL with http/http      http://localhost:8008
