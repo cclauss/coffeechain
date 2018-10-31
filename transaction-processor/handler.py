@@ -9,6 +9,8 @@ from sawtooth_sdk.protobuf.state_context_pb2 import TpStateEntry
 
 from proto import address
 
+logger = logging.getLogger(__name__)
+
 
 class StateManager(object):
     def __init__(self, context):
@@ -30,10 +32,10 @@ class StateManager(object):
             obj.ParseFromString(data[0].data)
             return obj
         except Exception as e:
-            logging.error("Error getting or parsing data from state")
-            logging.error("  class  : %s" % pb_class)
-            logging.error("  address: %s" % addr)
-            logging.error("  data   : %s" % data[0].data)
+            logger.error("Error getting or parsing data from state")
+            logger.error("  class  : %s" % pb_class)
+            logger.error("  address: %s" % addr)
+            logger.error("  data   : %s" % data[0].data)
             raise e
 
     def set_for_object(self, pb_object):
@@ -44,7 +46,7 @@ class StateManager(object):
         addr = address.make_address(pb_object)  # generic address calc based on the class type
         content = pb_object.SerializeToString()
 
-        logging.debug("setting state for %s [%s] => %r" % (class_name, addr, content))
+        logger.debug("setting state for %s [%s] => %r" % (class_name, addr, content))
         address_out = self.context.set_state({
             addr: content
         })
@@ -61,7 +63,7 @@ class ActualHandler(object):
         # better version of the apply from the real transaction handler
         handler = getattr(self, "handle_%s" % event_name, None)
         if handler:
-            logging.info("calling '%s' with: %r" % (handler.__name__, event_data))
+            logger.info("calling '%s' with: %r" % (handler.__name__, event_data))
             handler(event_data)
         else:
             raise InternalError("No handler for %s" % event_name)
@@ -101,9 +103,9 @@ class ActualHandler(object):
         assert isinstance(event, Events.AddRelated)
 
         def add(evt, obj_class, related_class, list_name):
-            logging.debug("Generic Add Related")
-            logging.debug("    source  : %r of %r" % (evt.object_key, obj_class))
-            logging.debug("    related : %r of %r" % (evt.related_key, related_class))
+            logger.debug("Generic Add Related")
+            logger.debug("    source  : %r of %r" % (evt.object_key, obj_class))
+            logger.debug("    related : %r of %r" % (evt.related_key, related_class))
             # get the state & address of the two items, using the mapping class to handle any class
             src = self.state.get_and_parse(obj_class, address.addr_map[obj_class](evt.object_key))
             related = self.state.get_and_parse(related_class, address.addr_map[related_class](evt.related_key))
@@ -140,19 +142,19 @@ class CoffeeTransactionHandler(TransactionHandler):
         return [ADDRESS_PREFIX]
 
     def apply(self, transaction, context):
-        logging.debug("---- TRANSACTION RECIEVED ------------------------------------ ")
+        logger.debug("---- TRANSACTION RECIEVED ------------------------------------ ")
         evt = CoffeeChainEvents()
         try:
             evt.ParseFromString(transaction.payload)
         except DecodeError as e:
-            logging.error("Error decoding message %s" % str(e))
-            logging.error("  1. Object must be `CoffeeChainEvents`")
-            logging.error("  2. Handler & application protobuf files must match")
-            logging.error("  ---------------------------------------")
-            logging.error("  body: %r" % transaction.payload)
+            logger.error("Error decoding message %s" % str(e))
+            logger.error("  1. Object must be `CoffeeChainEvents`")
+            logger.error("  2. Handler & application protobuf files must match")
+            logger.error("  ---------------------------------------")
+            logger.error("  body: %r" % transaction.payload)
             return
 
         evt_name = evt.WhichOneof('payload')
         evt_data = getattr(evt, evt_name)
         ActualHandler(context).process(evt_name, evt_data)
-        logging.DEBUG("^^^^ TRANSACTION COMPLETE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ")
+        logger.debug("^^^^ TRANSACTION COMPLETE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ")
