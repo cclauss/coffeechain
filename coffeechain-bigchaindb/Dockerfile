@@ -1,19 +1,12 @@
-FROM ubuntu:18.04
-
-LABEL name="coffeechain-bigchaindb"
-LABEL version="1.0"
-
-RUN apt-get update && apt-get install -y \
-  curl \
-  build-essential
-
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
-RUN apt-get install -y nodejs
+FROM node:8.12.0-alpine
 
 WORKDIR /coffeechain-bigchaindb
 
 COPY  . .
 
-RUN npm install
+RUN apk add --no-cache --virtual .build-deps make gcc g++ python && \
+    npm install && \
+    npm cache clean --force && \
+    apk del .build-deps
 
 EXPOSE 3000
