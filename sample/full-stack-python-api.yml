@@ -1,0 +1,80 @@
+#
+# DOCKER COMPOSE FILE FOR FULL-STACK COFFEECHAIN
+# - Uses the PYTHON API server to talk to sawtooth
+# - 1 validator & transaction processor
+# - Rest API exposed on 8000
+#
+# To use this you must build the transaction processor (TxP) and
+# api server first, under the names `coffeechain-api` and `-tp`
+#
+# from the api server directory:  docker build . -t coffeechain-api
+# from the TxP directory:         docker build . -t coffeechain-tp
+#
+# This file is for testing.  Please only use `docker-compose up|down`,
+# to bring it up with a clean state.  If you do not run `down` then the
+# validator will fail to start since the key creation will fail
+#
+
+version: "2.1"
+
+services:
+
+  validator:
+    image: hyperledger/sawtooth-validator:1.0
+    expose:
+      - 4004
+    ports:
+      - "4004:4004"
+    # start the validator with an empty genesis batch
+    entrypoint: "bash -c \"\
+        sawadm keygen && \
+        sawtooth keygen my_key && \
+        sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
+        sawadm genesis config-genesis.batch && \
+        sawtooth-validator -vv \
+          --endpoint tcp://validator:8800 \
+          --bind component:tcp://eth0:4004 \
+          --bind network:tcp://eth0:8800 \
+        \""
+
+  sawtooth-api:
+    image: hyperledger/sawtooth-rest-api:1.0
+    ports:
+      - "8008:8008"
+    depends_on:
+      - validator
+    entrypoint: sawtooth-rest-api -C tcp://validator:4004 --bind sawtooth-api:8008
+
+  sawtooth-shell:
+    image: hyperledger/sawtooth-all:1.0
+    depends_on:
+      - sawtooth-api
+    entrypoint: "bash -c \"\
+        sawtooth keygen && \
+        tail -f /dev/null \
+        \""
+
+  settings-tp:
+    image: hyperledger/sawtooth-settings-tp:1.0
+    depends_on:
+      - validator
+    entrypoint: settings-tp -vv -C tcp://validator:4004
+
+  coffeechain-api:
+    image: coffeechain-api:latest
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    depends_on:
+      - sawtooth-api
+      - validator
+    environment:
+      - SAWTOOTH_API=http://sawtooth-api:8008
+
+  coffeechain-tp:
+    image: coffeechain-tp:latest
+    depends_on:
+      - validator
+    environment:
+      - VALIDATOR_HOST=validator
