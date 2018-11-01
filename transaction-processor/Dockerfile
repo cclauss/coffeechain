@@ -24,13 +24,14 @@ COPY proto    ./proto/
 
 RUN chmod +x processor.py
 
-ENTRYPOINT python processor.py --host ${VALIDATOR}
+ENTRYPOINT python processor.py
 
 # ENV VARIABLES
 # These variables should be supplied to the container at runtime
 #
-# Name -------- Format ---------------- Default ------------
-# VALIDATOR     Host Name               None
+# Name ------------- Format ------ Default |
+# VALIDATOR_HOST     Host Name     None    | The processory.py reads this env variable
+# LOG_LEVEL          Level name    INFO    | The log level to output from the root logger
 
 # If you prefer, ou can manually set the validator that this TP should connect to
 # in the docker-compose file or on the command line:

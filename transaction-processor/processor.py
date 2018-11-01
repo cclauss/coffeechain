@@ -1,36 +1,37 @@
 #!/usr/bin/env python
-import logging
-import os
 import argparse
+import logging
+import settings
 
-from sawtooth_sdk.processor.core import TransactionProcessor
 from handler import CoffeeTransactionHandler
+from sawtooth_sdk.processor.core import TransactionProcessor
 
-logging.basicConfig(level=logging.INFO)
 
 # this should probably be in a command line parameter as well
 # as in an env variable.  commandline takes precedence
-VALIDATOR_HOST = os.environ.get("VALIDATOR_HOST", "localhost")
 
 def parse_args(args):
     parser = argparse.ArgumentParser(
-    formatter_class=argparse.RawTextHelpFormatter
+        formatter_class=argparse.RawTextHelpFormatter
     )
 
     parser.add_argument(
-    '--host',
-     default= VALIDATOR_HOST,
-     help='Hostname for  endpoint for the validator connection'
+        '--host',
+        default=settings.VALIDATOR_HOST,
+        help='Hostname for  endpoint for the validator connection'
     )
 
     return parser.parse_args(args)
 
+
 def main(args=None):
-    logging.info("Starting Transaction Processor")
+    logging.info("Loading Transaction Processor")
     arguments = parse_args(args)
     processor = None
     try:
-        processor = TransactionProcessor(url='tcp://%s:4004' % arguments.host)
+        url = 'tcp://%s:4004' % arguments.host
+        logging.info("~ using url: %s" % url)
+        processor = TransactionProcessor(url=url)
         processor.add_handler(CoffeeTransactionHandler())
         processor.start()
     except KeyboardInterrupt:
