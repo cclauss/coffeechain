@@ -2,15 +2,14 @@ from bigchaindb_driver import BigchainDB
 bdb_root_url = 'http://localhost:9984'
 bdb = BigchainDB(bdb_root_url)
 
-def create(data, metadata, creator, recipient):
+def create(data, metadata, issuer, recipient):
     tx = bdb.transactions.prepare(
             operation='CREATE', 
-            signers=creator.public_key,
+            signers=issuer.public_key,
             asset=data,
             metadata=metadata,
             recipients=recipient)
-    signed_tx = bdb.transactions.fulfill(tx, private_keys=creator.private_key)
-    return bdb.transactions.send_commit(signed_tx)
+    return sign_and_commit(tx, issuer)
 
 def transfer(asset_input_tx, metadata, owner, recipient):
     output = asset_input_tx['outputs'][0]
@@ -28,11 +27,14 @@ def transfer(asset_input_tx, metadata, owner, recipient):
         asset={'id': asset_input_tx['id']},
         metadata=metadata,
         recipients=recipient)
-    signed_tx = bdb.transactions.fulfill(tx, private_keys=owner.private_key)
-    return bdb.transactions.send_commit(signed_tx)
+    return sign_and_commit(tx, owner)
 
-def getAssets(public_key, spent=False):
+def get_assets_by_user(public_key, spent=False):
     return bdb.outputs.get(public_key, spent)
 
-def getAsset(asset_id, operation=None):
+def get_asset(asset_id, operation=None):
     return bdb.transactions.get(asset_id, operation)
+
+def sign_and_commit(tx, signer):
+    signed_tx = bdb.transactions.fulfill(tx, private_keys=signer.private_key)
+    return bdb.transactions.send_commit(signed_tx)
