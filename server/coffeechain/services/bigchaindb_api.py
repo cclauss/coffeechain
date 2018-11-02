@@ -49,7 +49,9 @@ def get_transaction_id(transaction):
     return transaction['id'] if transaction['operation'] == 'CREATE' else transaction['asset']['id']
 
 def get_last_tx(query):
-    tx_list = get_asset(search_asset(query)[0]['id'])
+    query_result = search_asset(query)[0]['id']
+    assert len(query_result) == 1, "Invalid number of records returned for provided search query"
+    tx_list = get_asset(query_result)
     return tx_list[len(tx_list) - 1]
 
 def generate_bdb_keypair(passphrase: str):
