@@ -1,2 +1,3 @@
 *.priv
 *.sqlite3
+venv/
