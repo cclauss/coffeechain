@@ -1,11 +1,21 @@
+from sha3 import sha3_256
+
 from bigchaindb_driver import BigchainDB
 from bigchaindb_driver.crypto import generate_keypair
-from sha3 import sha3_256
+
+from coffeechain.utils.misc import get_timestamp
 
 bdb_root_url = 'http://localhost:9984'
 bdb = BigchainDB(bdb_root_url)
 
-def create(data, metadata, issuer_keypair, recipient_pub_key):
+def generate_bdb_keypair(passphrase: str):
+    return generate_keypair(sha3_256(passphrase.encode()).digest())
+
+default_keypair = generate_bdb_keypair('DefaultUserKeys')
+
+def create(data, metadata = {'timestamp': get_timestamp()}, 
+            issuer_keypair = default_keypair,
+            recipient_pub_key = default_keypair.public_key):
     tx = bdb.transactions.prepare(
             operation='CREATE', 
             signers=issuer_keypair.public_key,
@@ -14,7 +24,9 @@ def create(data, metadata, issuer_keypair, recipient_pub_key):
             recipients=recipient_pub_key)
     return sign_and_send(tx, issuer_keypair)
 
-def transfer(asset_input_tx, metadata, owner_keypair, recipient_pub_key):
+def transfer(asset_input_tx, metadata = {'timestamp': get_timestamp()} ,
+            owner_keypair = default_keypair, 
+            recipient_pub_key = default_keypair.public_key):
     output = asset_input_tx['outputs'][0]
     inputs_ = {
         'fulfillment': output['condition']['details'],
@@ -53,6 +65,3 @@ def get_last_tx(query):
     assert len(query_result) == 1, "Invalid number of records returned for provided search query"
     tx_list = get_asset(query_result)
     return tx_list[len(tx_list) - 1]
-
-def generate_bdb_keypair(passphrase: str):
-    return generate_keypair(sha3_256(passphrase.encode()).digest())

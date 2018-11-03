@@ -15,6 +15,7 @@ import threading
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coffeechain.settings")
+os.environ["BIGCHAINDB"] = 'True'
 
 def get_thread_logstr():
     """
