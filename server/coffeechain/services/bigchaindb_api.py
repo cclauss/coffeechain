@@ -5,8 +5,13 @@ from bigchaindb_driver.crypto import generate_keypair
 
 from coffeechain.utils.misc import get_timestamp
 
-bdb_root_url = 'http://localhost:9984'
+from django.conf import settings
+
+bdb_root_url = settings.BIGCHAINDB_API
 bdb = BigchainDB(bdb_root_url)
+
+def check_bigchaindb_enable():
+    return True if(settings.BIGCHAINDB_ENABLED == 'True') else False
 
 def generate_bdb_keypair(passphrase: str):
     return generate_keypair(sha3_256(passphrase.encode()).digest())
