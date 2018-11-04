@@ -27,7 +27,15 @@ class GetCertView(APIView):
 
     def get(self, request, key=""):
         if(bigchaindb_api.check_bigchaindb_enable()):
-            data = bigchaindb_api.search_asset(key)[0]['data']
+            err, data = bigchaindb_api.find_one(key)
+            if err:
+                return Response(status=err, data={
+                "error": data,
+                    "details": {
+                    "error_code": err,
+                    "key": key
+                }
+            })
         else:
             cert_address = address.for_cert(key)
             err, cert = sawtooth_api.get_state_as(Certification, cert_address)
