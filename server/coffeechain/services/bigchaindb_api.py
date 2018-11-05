@@ -63,7 +63,7 @@ def send_commit(signed_tx):
 def send_sync(signed_tx):
     return bdb.transactions.send_sync(signed_tx)
 
-def end_async(signed_tx):
+def send_async(signed_tx):
     return bdb.transactions.send_async(signed_tx)
 
 def sign_and_send(tx, signer, mode = None):
@@ -71,7 +71,7 @@ def sign_and_send(tx, signer, mode = None):
     if mode == 'sync':
         return send_sync(signed_tx)
     elif mode == 'async':
-        return send_sync(signed_tx)
+        return send_async(signed_tx)
 
     return send_commit(signed_tx)
 
