@@ -3,7 +3,7 @@ from rest_framework.exceptions import ValidationError
 from coffeechain.proto import address
 from coffeechain.services import sawtooth_api
 from coffeechain.utils.drf.utils import get_view_serializer_context
-
+from coffeechain.services.bigchaindb_api import check_bigchaindb_enable
 
 def validate_using(serializer_class, data, view=None, **kwargs):
     """
@@ -21,8 +21,9 @@ def sawtooth_address_exists(address_func):
     assert addr_gen is not None, "address module function '%s' not found" % address_func
 
     def _validate(value):
-        if not sawtooth_api.state_exists(addr_gen(value)):
-            raise ValidationError("State for '%s' does not exist" % value)
+        if not check_bigchaindb_enable():
+            if not sawtooth_api.state_exists(addr_gen(value)):
+                raise ValidationError("State for '%s' does not exist" % value)
         return value
 
     return _validate
@@ -33,8 +34,9 @@ def sawtooth_address_doesnt_exist(address_func):
     assert addr_gen is not None, "address module function '%s' not found" % address_func
 
     def _validate(value):
-        if sawtooth_api.state_exists(addr_gen(value)):
-            raise ValidationError("State for '%s' alrady exists" % value)
+        if not check_bigchaindb_enable():
+            if sawtooth_api.state_exists(addr_gen(value)):
+                raise ValidationError("State for '%s' alrady exists" % value)
         return value
 
     return _validate

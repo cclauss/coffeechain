@@ -15,6 +15,8 @@ import threading
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "coffeechain.settings")
+#os.environ["BIGCHAINDB"] = 'True'  # set this in docker-compose
+#os.environ["BIGCHAINDB_API"] = 'http://localhost:9984'  # set this in docker-compose
 
 def get_thread_logstr():
     """

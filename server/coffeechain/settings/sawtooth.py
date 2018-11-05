@@ -19,3 +19,5 @@ else:
         SAWTOOTH_SIGNER = CryptoFactory(SAWTOOTH_CONTEXT).new_signer(SAWTOOTH_PRIVATE_KEY)
 
 SAWTOOTH_API = env.str("SAWTOOTH_API", "http://localhost:8008/").rstrip("/")  # should not have trailing slash
+BIGCHAINDB_ENABLED = env.str("BIGCHAINDB_ENABLED", "False")
+BIGCHAINDB_API = env.str("BIGCHAINDB_API", "http://localhost:9984/")

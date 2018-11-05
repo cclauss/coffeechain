@@ -9,7 +9,7 @@ RUN \
     # this virtual package can be uninstalled after the python requirements are built
     apk add --update --no-cache --virtual docker-build-deps \
         alpine-sdk \
-        autoconf automake libtool \
+        autoconf automake libressl-dev libtool \
     # these deps are required for the running system
 &&  apk add --update --no-cache --virtual docker-runtime-libs \
         libffi-dev \

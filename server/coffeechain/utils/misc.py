@@ -1,7 +1,9 @@
+import os
+import time
+import datetime
 import collections
 
 from django.utils import six
-
 
 def is_seq(obj):
     """
@@ -18,3 +20,6 @@ def as_list(obj):
         return [obj]
     else:
         return obj
+
+def get_timestamp():
+    return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
