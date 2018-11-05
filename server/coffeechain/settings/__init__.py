@@ -1,6 +1,7 @@
 from .logging import *
 from ._base import *
 from .sawtooth import *
+from .bigchaindb import *
 
 logger = logging.getLogger(__name__)
 

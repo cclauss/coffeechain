@@ -9,17 +9,15 @@ from django.conf import settings
 
 bdb = BigchainDB(settings.BIGCHAINDB_API)
 
-def check_bigchaindb_enable():
-    return True if(settings.BIGCHAINDB_ENABLED == 'True') else False
-
 def generate_bdb_keypair(passphrase: str):
     return generate_keypair(sha3_256(passphrase.encode()).digest())
 
 default_keypair = generate_bdb_keypair('DefaultUserKeys') # remove this in production
 
-def create(data, metadata = {'timestamp': get_timestamp()}, 
+def create(data, metadata = None, 
             issuer_keypair = default_keypair,
             recipient_pub_key = default_keypair.public_key, mode = None):
+    metadata = metadata or {'timestamp': get_timestamp()}
     tx = bdb.transactions.prepare(
             operation='CREATE', 
             signers=issuer_keypair.public_key,
@@ -28,9 +26,10 @@ def create(data, metadata = {'timestamp': get_timestamp()},
             recipients=recipient_pub_key)
     return sign_and_send(tx, issuer_keypair, mode)
 
-def transfer(asset_input_tx, metadata = {'timestamp': get_timestamp()} ,
+def transfer(asset_input_tx, metadata = None ,
             owner_keypair = default_keypair, 
             recipient_pub_key = default_keypair.public_key, mode = None):
+    metadata = metadata or {'timestamp': get_timestamp()}
     output = asset_input_tx['outputs'][0]
     inputs_ = {
         'fulfillment': output['condition']['details'],

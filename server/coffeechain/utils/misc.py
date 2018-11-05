@@ -1,6 +1,4 @@
-import os
-import time
-import datetime
+import arrow
 import collections
 
 from django.utils import six
@@ -22,4 +20,4 @@ def as_list(obj):
         return obj
 
 def get_timestamp():
-    return datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    return arrow.utcnow().timestamp
