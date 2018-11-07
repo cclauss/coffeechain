@@ -15,6 +15,8 @@ import environ
 
 from corsheaders.defaults import default_headers
 
+from coffeechain.common.constants import Chain
+
 logger = logging.getLogger(__name__)
 
 ALLOWED_HOSTS = ["*"]
@@ -34,6 +36,8 @@ _env_file = APP_ROOT(".env")
 if os.path.exists(_env_file):
     logger.info("Reading .env file: %s" % _env_file)
     environ.Env.read_env(_env_file)  # reading .env file
+
+CHAIN = env('CHAIN', cast=Chain, default=Chain.SAWTOOTH)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/

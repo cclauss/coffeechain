@@ -1,4 +1,7 @@
-from ._base import env
+from coffeechain.common.constants import Chain
+from ._base import env, CHAIN
 
-BIGCHAINDB_ENABLED = bool(env.str('BIGCHAINDB_ENABLED', 'False'))
-BIGCHAINDB_API = env.str('BIGCHAINDB_API', 'http://localhost:9984/')
+if CHAIN == Chain.BIGCHAIN:
+    BIGCHAINDB_API = env.str('BIGCHAINDB_API', 'http://localhost:9984/')
+else:
+    BIGCHAINDB_API = None
